@@ -15,7 +15,7 @@ public class Login {
     private String password;
     private String cellPhoneNumber;
 
-public Login(String firstname, String lastName, String username, String password, String cellPhoneNumber) {
+public Login(String firstName, String lastName, String username, String password, String cellPhoneNumber) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = password;
@@ -24,11 +24,12 @@ public Login(String firstname, String lastName, String username, String password
 }
 public boolean checkUserName() {
     return username.contains("_") && username.length() <=5;
-    
-public boolean.checkPasswordComplexity() {
-    return password() >= 8
-            && password,matches(".*[A-Z].*")
-            && password,matches(.*\\d.*)
-            && password,matches(".*[^a-zA-Z0-9].*");
+}
+
+public boolean checkPasswordComplexity() {
+    return password.length()>= 8
+            && password.matches(".*[A-Z].*")
+            && password.matches(".*\\d.*")
+            && password.matches(".*[^a-zA-Z0-9].*");
 }
 }
