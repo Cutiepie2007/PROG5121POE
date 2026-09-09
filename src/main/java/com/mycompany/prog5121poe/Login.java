@@ -32,4 +32,8 @@ public boolean checkPasswordComplexity() {
             && password.matches(".*\\d.*")
             && password.matches(".*[^a-zA-Z0-9].*");
 }
+
+public boolean checkCellPhoneNumber() {
+    return cellPhoneNumber.matches("^\\+27\\d{9}$");
+}
 }
