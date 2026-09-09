@@ -36,4 +36,17 @@ public boolean checkPasswordComplexity() {
 public boolean checkCellPhoneNumber() {
     return cellPhoneNumber.matches("^\\+27\\d{9}$");
 }
+public String registerUser() {
+  
+    if(!checkUserName()){
+        return "Username is not correctly formatted; please ensure that your username contains an underscore and is no  more than five characters in length";
+    }
+    
+    if(!checkPasswordComplexity()) {
+        return "Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter,a number, and a special character.";
+    }
+       
+    return "Registration successful.";
+    
+}
 }
