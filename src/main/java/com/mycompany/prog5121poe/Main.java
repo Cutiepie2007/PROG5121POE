@@ -11,6 +11,15 @@ package com.mycompany.prog5121poe;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        
+       Login user = new Login (
+                "Saaheerah",
+                "Majiet",
+                "saa_1",
+                "Password1!",
+                "+27680343190"
+        );
+       
+       System.out.println(user.registerUser());
     }
 }
