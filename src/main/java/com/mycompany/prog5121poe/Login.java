@@ -48,5 +48,9 @@ public String registerUser() {
        
     return "Registration successful.";
     
+public boolean loginUser() {
+        return username.equals(username)
+                && password.equals(password);
+    
 }
 }
