@@ -47,10 +47,18 @@ public String registerUser() {
     }
        
     return "Registration successful.";
-    
+}
 public boolean loginUser() {
         return username.equals(username)
                 && password.equals(password);
-    
+}
+
+public String returnLoginStatus() {
+    if (loginUser()) {
+        return "Welcome" + firstName + "," + lastName + "it is great to see you again.";
+    }else {
+        return "username or password incorrect, please try again.";
+    }
+
 }
 }
