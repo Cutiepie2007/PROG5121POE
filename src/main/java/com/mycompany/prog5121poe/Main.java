@@ -21,5 +21,7 @@ public class Main {
         );
        
        System.out.println(user.registerUser());
+       System.out.println(user.loginUser());
+       System.out.println(user.returnLoginStatus());
     }
 }
