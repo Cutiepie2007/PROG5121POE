@@ -14,6 +14,8 @@ public class Login {
     private String username;
     private String password;
     private String cellPhoneNumber;
+    private String loginUsername;
+    private String loginPassword;
 
 public Login(String firstName, String lastName, String username, String password, String cellPhoneNumber) {
     this.firstName = firstName;
@@ -48,9 +50,17 @@ public String registerUser() {
        
     return "Registration successful.";
 }
+
+public void setLoginname(String loginUserName) {
+    this.loginUsername = loginUserName;
+}
+
+public void setLoginpassword(String loginPassword) {
+    this.loginPassword = loginPassword;
+}
 public boolean loginUser() {
-        return username.equals(username)
-                && password.equals(password);
+        return username.equals(loginUsername)
+                && password.equals(loginPassword);
 }
 
 public String returnLoginStatus() {
