@@ -30,6 +30,7 @@ public class Main {
         String cellPhoneNumber =scanner.nextLine();
         
         Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
+        System.out.println(login.registerUser());
         
         if(login.checkUserName()){
             System.out.println("Username successfully captured");
@@ -45,15 +46,22 @@ public class Main {
         else {
         System.out.println("Password is incorrcetly formattted");
          }
-        
+     
         if(login.checkCellPhoneNumber()){
-            System.out.println("Registration successful");
+            System.out.println("Cell phone number successfully captured");
         }
         
         else {
-         System.out.println("Registration failed. Please check your details");
+         System.out.println("Cell phone number is incorrectly formatted");
         }
-            
+          
+        if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()) {
+            System.out.println("Registration successful.");
+        }
+        
+        else {
+            System.out.println("Registration failed. Please check your details");
+        }
     scanner.close();
     }
     }
