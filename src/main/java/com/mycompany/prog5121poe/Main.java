@@ -30,5 +30,30 @@ public class Main {
         String cellPhoneNumber =scanner.nextLine();
         
         Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
+        
+        if(login.checkUserName()){
+            System.out.println("Username successfully captured");
+        }
+        else{
+            System.out.println("Username is incorrcetly formattted");
+        }
+        
+        if(login.checkPasswordComplexity()) {
+            System.out.println("Password successfully captured.");
+        }
+        
+        else {
+        System.out.println("Password is incorrcetly formattted");
+         }
+        
+        if(login.checkCellPhoneNumber()){
+            System.out.println("Registration successful");
+        }
+        
+        else {
+         System.out.println("Registration failed. Please check your details");
+        }
+            
+    scanner.close();
     }
     }
