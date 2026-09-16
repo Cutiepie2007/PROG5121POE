@@ -27,7 +27,8 @@ public class Main {
         String password =scanner.nextLine();
         
         System.out.print("Enter your cell phone number; ");
-        String cellPhonenumber =scanner.nextLine();
+        String cellPhoneNumber =scanner.nextLine();
         
+        Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
     }
     }
