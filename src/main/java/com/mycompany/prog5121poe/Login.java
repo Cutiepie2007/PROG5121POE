@@ -47,9 +47,12 @@ public String registerUser() {
     if(!checkPasswordComplexity()) {
         return "Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter,a number, and a special character.";
     }
-       
+     
+    if(!checkCellPhoneNumber()) {
+        return "Cell phone number is not correctly; please insure it starts with +27 and is followed by 9 digits.";
+    }
     return "Registration successful.";
-}
+    }
 
 public void setLoginname(String loginUserName) {
     this.loginUsername = loginUserName;
