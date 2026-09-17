@@ -82,4 +82,17 @@ public class LoginTest {
         
         assertFalse(user.checkPasswordComplexity());
     }
+    
+    @Test
+    public void testInvalidCellPhonesNumbers(){
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "083968976"
+        );
+        
+        assertFalse(user.checkCellPhoneNumber());
+    }
 }
