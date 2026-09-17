@@ -24,6 +24,57 @@ public Login(String firstName, String lastName, String username, String password
     this.username = username;
     this.cellPhoneNumber = cellPhoneNumber;
 }
+
+//Getters (Which allows reading the values)
+public String getFirstname(){
+    return firstName;
+}
+
+public String getLastName(){
+    return lastName;
+}
+
+public String getUserName(){
+    return username;
+}
+
+public String getPasword(){
+    return password;
+}
+
+public String getCellPhoneNumber(){
+    return cellPhoneNumber;
+}
+
+//Stetters
+
+public void setFirstname(String firstName) {
+    this.firstName = firstName;
+}
+
+public void setLastName(String lastName) {
+    this.lastName = lastName;
+}
+
+public void setUsername(String username) {
+    this.username = username;
+}
+
+public void setPassword(String password) {
+    this.password = password;
+}
+
+public void setCellPhoneNumber(String cellPhoneNumber) {
+    this.cellPhoneNumber = cellPhoneNumber;
+}
+
+public void setLoginUsername(String loginUsername) {
+    this.loginUsername = loginUsername;
+}
+
+public void setLoginPassword(String loginPassword){
+    this.loginPassword = loginPassword;
+}
 public boolean checkUserName() {
     return username.contains("_") && username.length() <=5;
 }
