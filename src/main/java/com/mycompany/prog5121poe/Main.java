@@ -32,6 +32,10 @@ public class Main {
         Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
         System.out.println(login.registerUser());
         
+        System.out.println("================================");
+        System.out.println("REGISTRATION RESULTS");
+        System.out.println("================================");
+
         if(login.checkUserName()){
             System.out.println("Username successfully captured");
         }
@@ -55,6 +59,10 @@ public class Main {
          System.out.println("Cell phone number is incorrectly formatted");
         }
           
+        System.out.println("================================");
+        System.out.println("LOGIN");
+        System.out.println("================================");
+
         if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()) {
             System.out.println("Registration successful.");
         }
