@@ -14,19 +14,19 @@ public class Main {
         System.out.println("QUICKCHAT REGISTRATION");
         System.out.println("================================");
         
-        System.out.print("Enter your first name; ");
+        System.out.print("Enter your first name: ");
         String firstName =scanner.nextLine();
         
-        System.out.print("Enter your last name; ");
+        System.out.print("Enter your last name: ");
         String lastName =scanner.nextLine();
         
-        System.out.print("Enter your username; ");
+        System.out.print("Enter your username: ");
         String username =scanner.nextLine();
         
-        System.out.print("Enter your password; ");
+        System.out.print("Enter your password: ");
         String password =scanner.nextLine();
         
-        System.out.print("Enter your cell phone number; ");
+        System.out.print("Enter your cell phone number: ");
         String cellPhoneNumber =scanner.nextLine();
         
         Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
@@ -58,14 +58,13 @@ public class Main {
         else {
          System.out.println("Cell phone number is incorrectly formatted");
         }
-          
+         if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()){
+            System.out.println("Registration successful.");
+            
         System.out.println("================================");
         System.out.println("LOGIN");
         System.out.println("================================");
 
-        if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()){
-            System.out.println("Registration successful.");
-           
             System.out.print("Enter username:");
             String loginUsername = scanner.nextLine();
             
@@ -73,7 +72,7 @@ public class Main {
             String loginPassword = scanner.nextLine();
             
     if (login.loginUser(loginUsername, loginPassword)) {
-        System.out.println("Welcome" + firstName + "," + lastName + "it is great to see you again.");
+        System.out.println("Welcome " + firstName + " " + lastName + " it is great to see you again.");
     }else {
         System.out.println("Username or Password incorrect, please try agin");
         }
