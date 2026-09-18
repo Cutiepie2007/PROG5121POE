@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args){
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner= new Scanner(System.in)) {
         
         System.out.println("================================");
         System.out.println("QUICKCHAT REGISTRATION");
@@ -63,7 +63,7 @@ public class Main {
         System.out.println("LOGIN");
         System.out.println("================================");
 
-        if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()) {
+        if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()){
             System.out.println("Registration successful.");
            
             System.out.print("Enter username:");
@@ -77,9 +77,10 @@ public class Main {
     }else {
         System.out.println("Username or Password incorrect, please try agin");
         }
-    } else {
+        }else {
             System.out.println("Registration failed. Please check your details");
         }
-    scanner.close();
+        }
     }
-    }
+}
+
