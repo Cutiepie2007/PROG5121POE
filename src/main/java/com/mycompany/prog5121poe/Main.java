@@ -65,9 +65,19 @@ public class Main {
 
         if(login.checkUserName() && login.checkPasswordComplexity() && login.checkCellPhoneNumber()) {
             System.out.println("Registration successful.");
+           
+            System.out.print("Enter username:");
+            String loginUsername = scanner.nextLine();
+            
+            System.out.print("Enter password:");
+            String loginPassword = scanner.nextLine();
+            
+    if (login.loginUser(loginUsername, loginPassword)) {
+        System.out.println("Welcome" + firstName + "," + lastName + "it is great to see you again.");
+    }else {
+        System.out.println("Username or Password incorrect, please try agin");
         }
-        
-        else {
+    } else {
             System.out.println("Registration failed. Please check your details");
         }
     scanner.close();
