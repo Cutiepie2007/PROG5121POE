@@ -112,17 +112,16 @@ public void setLoginname(String loginUserName) {
 public void setLoginpassword(String loginPassword) {
     this.loginPassword = loginPassword;
 }
-public boolean loginUser() {
+public boolean loginUser(String username, String Password) {
         return username.equals(loginUsername)
                 && password.equals(loginPassword);
 }
 
 public String returnLoginStatus() {
-    if (loginUser()) {
+    if (loginUser(this.loginUsername,this.loginPassword)) {
         return "Welcome" + firstName + "," + lastName + "it is great to see you again.";
     }else {
         return "Username or password incorrect, please try again.";
     }
-
 }
 }
