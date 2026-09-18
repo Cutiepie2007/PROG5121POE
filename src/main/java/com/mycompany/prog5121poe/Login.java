@@ -8,6 +8,7 @@ package com.mycompany.prog5121poe;
  *
  * @author Student
  */
+//Private variables to store user's data securely
 public class Login {
     private String firstName;
     private String lastName;
@@ -89,6 +90,7 @@ public boolean checkPasswordComplexity() {
 public boolean checkCellPhoneNumber() {
     return cellPhoneNumber.matches("^\\+27\\d{9}$");
 }
+//User validation check
 public String registerUser() {
   
     if(!checkUserName()){
@@ -100,7 +102,7 @@ public String registerUser() {
     }
      
     if(!checkCellPhoneNumber()) {
-        return "Cell phone number is not correctly; please insure it starts with +27 and is followed by 9 digits.";
+        return "Cell phone number is incorrectly formatted; please insure it starts with +27 and is followed by 9 digits.";
     }
     return "Registration successful.";
     }
@@ -112,16 +114,16 @@ public void setLoginname(String loginUserName) {
 public void setLoginpassword(String loginPassword) {
     this.loginPassword = loginPassword;
 }
-public boolean loginUser(String username, String Password) {
-        return username.equals(loginUsername)
-                && password.equals(loginPassword);
+public boolean loginUser(String username, String password) {
+        return username.equals(this.username)
+                && password.equals(this.password);
 }
-
-public String returnLoginStatus() {
-    if (loginUser(this.loginUsername,this.loginPassword)) {
-        return "Welcome" + firstName + "," + lastName + "it is great to see you again.";
-    }else {
-        return "Username or password incorrect, please try again.";
+//Login status message
+public String returnLoginStatus(String loginUserName, String loginPassword) {
+    if (loginUser(loginUsername, loginPassword)){
+        return "Welcome " +firstName+ " " +lastName+ " it is great to see you again.";
+    }else{
+        return "Username or password is incorrect, please try again.";
     }
 }
 }
