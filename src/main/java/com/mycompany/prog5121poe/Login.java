@@ -16,7 +16,7 @@ public class Login {
     private String password;
     private String cellPhoneNumber;
     private String loginUsername;
-    private String loginPassword;
+    
 
 public Login(String firstName, String lastName, String username, String password, String cellPhoneNumber) {
     this.firstName = firstName;
@@ -73,9 +73,6 @@ public void setLoginUsername(String loginUsername) {
     this.loginUsername = loginUsername;
 }
 
-public void setLoginPassword(String loginPassword){
-    this.loginPassword = loginPassword;
-}
 public boolean checkUserName() {
     return username.contains("_") && username.length() <=5;
 }
@@ -86,7 +83,7 @@ public boolean checkPasswordComplexity() {
             && password.matches(".*\\d.*")
             && password.matches(".*[^a-zA-Z0-9].*");
 }
-
+//Regex is a regular expression. You can use regex to test if a string contains what your looking for(W3Schools,n.d).
 public boolean checkCellPhoneNumber() {
     return cellPhoneNumber.matches("^\\+27\\d{9}$");
 }
@@ -111,9 +108,6 @@ public void setLoginname(String loginUserName) {
     this.loginUsername = loginUserName;
 }
 
-public void setLoginpassword(String loginPassword) {
-    this.loginPassword = loginPassword;
-}
 public boolean loginUser(String username, String password) {
         return username.equals(this.username)
                 && password.equals(this.password);
@@ -124,6 +118,6 @@ public String returnLoginStatus(String loginUserName, String loginPassword) {
         return "Welcome " +firstName+ " " +lastName+ " it is great to see you again.";
     }else{
         return "Username or password is incorrect, please try again.";
-    }
+}
 }
 }
