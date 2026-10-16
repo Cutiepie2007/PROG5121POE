@@ -180,8 +180,7 @@ public class Main {
 
                 switch (option) {
 
-                    case "1":
-
+                    case "1" -> {
                         if (messageNumber >= numberOfMessages) {
 
                             System.out.println(
@@ -277,17 +276,17 @@ public class Main {
                             System.out.println(
 
                                     "Message ID generated: "
-
-                                    + message.getMessageID()
-
+                                            
+                                            + message.getMessageID()
+                                    
                             );
 
                             System.out.println(
 
                                     "Message Hash: "
-
-                                    + message.createMessageHash()
-
+                                            
+                                            + message.createMessageHash()
+                                    
                             );
 
                             System.out.println(
@@ -349,17 +348,11 @@ public class Main {
                             );
 
                         }
+                }
 
-                        break;
+                    case "2" -> System.out.println("Coming Soon.");
 
-                    case "2":
-
-                        System.out.println("Coming Soon.");
-
-                        break;
-
-                    case "3":
-
+                    case "3" -> {
                         quit = true;
 
                         System.out.println(
@@ -373,13 +366,9 @@ public class Main {
                                 "Thank you for using QuickChat."
 
                         );
+                }
 
-                        break;
-
-                    default:
-
-                        System.out.println(
-
+                    default -> System.out.println(
                                 "Invalid option. Please choose 1, 2 or 3."
 
                         );
