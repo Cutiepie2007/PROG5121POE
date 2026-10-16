@@ -7,7 +7,9 @@ package com.mycompany.prog5121poe;
 import java.util.Scanner;
 
 public class Main { 
+    
     public static void main(String[] args){
+        
         try (Scanner scanner= new Scanner(System.in)) {
         
         System.out.println("================================");
@@ -29,8 +31,25 @@ public class Main {
         System.out.print("Enter your cell phone number: ");
         String cellPhoneNumber =scanner.nextLine();
         
-        Login login = new Login(firstName, lastName, username, password, cellPhoneNumber);
+        Login login = new Login(
+                firstName, 
+                lastName, 
+                username, 
+                password, 
+                cellPhoneNumber
+        );
+        
         System.out.println(login.registerUser());
+        
+        if (!login.checkUserName()
+            || !login.checkPasswordComplexity()
+            || !login.checkCellPhoneNumber()){
+            
+            System.out.println(
+                    "Registration failed. Please check your details"
+            );
+            return;
+            }
         
         System.out.println("================================");
         System.out.println("REGISTRATION RESULTS");
