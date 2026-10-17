@@ -50,4 +50,18 @@ public class MessageTest {
                 message.checkMessageLength()
         );
     }
+    
+    @Test
+    public void testMessageExceeds250Characters() {
+        String longMessage = "A".repeat(251);
+
+        Message message = new Message(
+                0, "+27831234567", longMessage
+        );
+
+        assertTrue(
+                message.checkMessageLength()
+                        .contains("exceeds 250 characters")
+        );
+    }
 }
