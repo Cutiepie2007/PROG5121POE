@@ -38,4 +38,16 @@ public class MessageTest {
                         .contains("incorrectly formatted")
         );
     }
+
+    @Test
+    public void testMessageLength() {
+        Message message = new Message(
+                0, "+27831234567", "Hello there"
+        );
+
+        assertEquals(
+                "Message ready to send.",
+                message.checkMessageLength()
+        );
+    }
 }
