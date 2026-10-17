@@ -72,7 +72,6 @@ public class Main {
             if (login.checkUserName()
 
                     && login.checkPasswordComplexity()
-
                     && login.checkCellPhoneNumber()) {
 
                 System.out.println("Registration successful.");
@@ -80,13 +79,9 @@ public class Main {
             } else {
 
                 System.out.println(
-
                         "Registration failed. Please correct your details."
-
                 );
-
                 return;
-
 } 
         System.out.println("================================");
         System.out.println("LOGIN");
@@ -101,277 +96,178 @@ public class Main {
             if (!login.loginUser(loginUsername, loginPassword)) {
 
                 System.out.println(
-
                         "Username or password incorrect, please try again."
-
                 );
-
                 return;
-
             }
 
             System.out.println(
-
                     "Welcome " + firstName + ", " + lastName
-
                     + " it is great to see you again."
-
             );
 
             System.out.println("Welcome to QuickChat.");
 
             System.out.print(
-
                     "How many messages would you like to enter? "
-
             );
 
             int numberOfMessages;
-
             try {
-
                 numberOfMessages = Integer.parseInt(scanner.nextLine());
-
                 if (numberOfMessages < 0) {
-
                     System.out.println(
-
                             "Please enter zero or a positive number."
-
                     );
-
                     return;
-
                 }
 
             } catch (NumberFormatException e) {
-
                 System.out.println(
-
                         "Please enter a valid whole number."
-
                 );
-
                 return;
-
             }
 
             int messageNumber = 0;
-
             int totalSent = 0;
-
             boolean quit = false;
 
             while (!quit) {
 
                 System.out.println("\n================================");
-
                 System.out.println("QUICKCHAT MENU");
-
                 System.out.println("1) Send Messages");
-
                 System.out.println("2) Show recently sent messages");
-
                 System.out.println("3) Quit");
-
                 System.out.print("Choose an option: ");
-
                 String option = scanner.nextLine();
 
                 switch (option) {
-
                     case "1" -> {
                         if (messageNumber >= numberOfMessages) {
-
                             System.out.println(
-
                                     "You have reached the number of messages you selected."
-
                             );
-
                             break;
-
                         }
 
                         for (; messageNumber < numberOfMessages;
-
                                 messageNumber++) {
-
                             System.out.println(
-
                                     "\nMessage " + (messageNumber + 1)
-
                             );
 
                             System.out.print(
-
                                     "Enter recipient number (+27 followed by 9 digits): "
-
                             );
 
                             String recipient = scanner.nextLine();
-
                             System.out.print(
-
                                     "Enter message (maximum 250 characters): "
-
                             );
 
                             String messageText = scanner.nextLine();
-
                             Message message = new Message(
 
                                     messageNumber,
-
                                     recipient,
-
                                     messageText
-
                             );
 
                             if (!message.checkMessageID()) {
-
                                 System.out.println(
-
                                         "Message ID is incorrectly formatted."
-
                                 );
-
                                 continue;
-
                             }
 
                             String recipientResult =
-
                                     message.checkRecipientCell();
-
+                            
                             System.out.println(recipientResult);
 
                             if (!recipientResult.startsWith(
-
                                     "Cell phone number successfully")) {
-
                                 messageNumber--;
-
                                 break;
-
                             }
 
                             String lengthResult =
-
                                     message.checkMessageLength();
 
                             System.out.println(lengthResult);
 
                             if (!"Message ready to send.".equals(
-
                                     lengthResult)) {
-
                                 messageNumber--;
-
                                 break;
-
                             }
 
                             System.out.println(
-
                                     "Message ID generated: "       
                                     + message.getMessageID()
-                                    
                             );
 
                             System.out.println(
-
-                                    "Message Hash: "
-                                            
-                                            + message.createMessageHash()
-                                    
+                                    "Message Hash: "                                          
+                                            + message.createMessageHash()      
                             );
 
                             System.out.println(
-
                                     "Choose what to do with this message:"
-
                             );
 
                             System.out.println("1) Send Message");
-
                             System.out.println("2) Disregard Message");
-
-                            System.out.println(
-
-                                    "3) Store Message to send later"
-
+                            System.out.println("3) Store Message to send later"   
                             );
 
                             System.out.print("Choose an option: ");
 
                             int action;
-
                             try {
-
                                 action = Integer.parseInt(
-
                                         scanner.nextLine()
-
                                 );
 
                             } catch (NumberFormatException e) {
-
                                 action = -1;
-
                             }
 
                             System.out.println(
-
                                     message.SentMessage(action)
-
                             );
 
                             if (action == 1) {
-
                                 totalSent++;
-
                             }
 
                             System.out.println(
-
                                     "\nFull message details:"
-
                             );
 
                             System.out.println(
-
                                     message.printMessages()
-
                             );
-
-                        }
+                       }
                 }
 
                     case "2" -> System.out.println("Coming Soon.");
-
                     case "3" -> {
                         quit = true;
-
                         System.out.println(
-
                                 "Total messages sent: " + totalSent
-
                         );
 
                         System.out.println(
-
                                 "Thank you for using QuickChat."
-
                         );
                 }
 
                     default -> System.out.println(
                                 "Invalid option. Please choose 1, 2 or 3."
-
-                        );
-                        
+                        ); 
                 }
             }
          }
