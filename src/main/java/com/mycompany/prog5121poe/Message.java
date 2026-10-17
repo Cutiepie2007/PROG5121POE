@@ -68,15 +68,16 @@ public final class Message {
     }
 
     public String createMessageHash() {
-
+        if(messageText == null || messagetext.trim().isEmpty()) {
+            return messageID.substring(0, 2)
+                    + ":" + messageNumber + ":";
+        }
         String[] words = messageText.trim().split("\\s+");
 
         String firstWord = cleanWord(words[0]);
-
         String lastWord = cleanWord(words[words.length - 1]);
 
         String firstTwoIDDigits = messageID.substring(0, 2);
-
         return (firstTwoIDDigits
                 + ":" + messageNumber
                 + ":" + firstWord
