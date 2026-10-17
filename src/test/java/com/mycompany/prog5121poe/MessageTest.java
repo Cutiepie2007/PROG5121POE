@@ -26,4 +26,16 @@ public class MessageTest {
                 message.checkRecipientCell()
         );
     }
+
+    @Test
+    public void testInvalidRecipientCell() {
+        Message message = new Message(
+                0, "0831234567", "Hello there"
+        );
+
+        assertTrue(
+                message.checkRecipientCell()
+                        .contains("incorrectly formatted")
+        );
+    }
 }
