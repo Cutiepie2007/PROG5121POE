@@ -275,9 +275,8 @@ public class Main {
 
                             System.out.println(
 
-                                    "Message ID generated: "
-                                            
-                                            + message.getMessageID()
+                                    "Message ID generated: "       
+                                    + message.getMessageID()
                                     
                             );
 
