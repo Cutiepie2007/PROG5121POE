@@ -31,9 +31,7 @@ public final class Message {
     }
 
     private String generateMessageID() {
-
         Random random = new Random();
-
         long number = 1_000_000_000L
                 + (long) (random.nextDouble() * 9_000_000_000L);
 
@@ -41,7 +39,6 @@ public final class Message {
     }
 
     public boolean checkMessageID() {
-
         return messageID != null
                 && messageID.matches("\\d{10}");
     }
@@ -50,22 +47,18 @@ public final class Message {
 
         if (recipient != null
                 && recipient.matches("^\\+27\\d{9}$")) {
-
             return "Cell phone number successfully captured.";
         }
-
         return "Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.";
     }
 
     public String checkMessageLength() {
 
         if (messageText == null || messageText.trim().isEmpty()) {
-
             return "Please enter a message.";
         }
 
         if (messageText.length() <= 250) {
-
             return "Message ready to send.";
         }
 
@@ -84,40 +77,31 @@ public final class Message {
 
         String firstTwoIDDigits = messageID.substring(0, 2);
 
-        return (
-                firstTwoIDDigits
+        return (firstTwoIDDigits
                 + ":" + messageNumber
                 + ":" + firstWord
-                + lastWord
-        ).toUpperCase(Locale.ROOT);
+                + lastWord).toUpperCase(Locale.ROOT);
     }
 
     private String cleanWord(String word) {
-
         return word.replaceAll("[^A-Za-z0-9]", "");
     }
 
     public String SentMessage(int choice) {
-
         switch (choice) {
-
             case 1 -> {
                 status = "Sent";
-
                 return "Message successfully sent.";
             }
 
             case 2 -> {
                 status = "Disregarded";
-
                 return "Press 0 to delete the message.";
             }
 
             case 3 -> {
                 status = "Stored";
-
                 storeMessage();
-
                 return "Message successfully stored.";
             }
 
@@ -128,7 +112,6 @@ public final class Message {
     }
 
     public String printMessages() {
-
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
                 + "\nRecipient: " + recipient
@@ -136,12 +119,10 @@ public final class Message {
     }
 
     public int returnTotalMessagess() {
-
         return "Sent".equals(status) ? 1 : 0;
     }
 
   public void storeMessage() {
-
     String json = """
             {
               "messageID": "%s",
@@ -174,7 +155,6 @@ public final class Message {
 }
 
     private String escapeJson(String value) {
-
         return value.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
