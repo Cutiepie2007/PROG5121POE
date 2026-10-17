@@ -14,3 +14,16 @@ public class MessageTest {
         assertTrue(message.checkMessageID());
         assertEquals(10, message.getMessageID().length());
     }
+    
+ @Test
+    public void testCheckRecipientCell() {
+        Message message = new Message(
+                0, "+27831234567", "Hello there"
+        );
+
+        assertEquals(
+                "Cell phone number successfully captured.",
+                message.checkRecipientCell()
+        );
+    }
+}
