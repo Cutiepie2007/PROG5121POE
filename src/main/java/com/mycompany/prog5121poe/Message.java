@@ -68,7 +68,7 @@ public final class Message {
     }
 
     public String createMessageHash() {
-        if(messageText == null || messagetext.trim().isEmpty()) {
+        if(messageText == null || messageText.trim().isEmpty()) {
             return messageID.substring(0, 2)
                     + ":" + messageNumber + ":";
         }
