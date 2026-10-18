@@ -1,7 +1,15 @@
 package com.mycompany.prog5121poe;
 
-import java.io.FileWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Random;
 
@@ -122,47 +130,67 @@ public final class Message {
     public int returnTotalMessagess() {
         return "Sent".equals(status) ? 1 : 0;
     }
+public void storeMessage() {
+    Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
-  public void storeMessage() {
-    String json = """
-            {
-              "messageID": "%s",
-              "messageNumber": %d,
-              "messageHash": "%s",
-              "recipient": "%s",
-              "message": "%s",
-              "status": "%s"
-            },
-            """.formatted(
-            escapeJson(messageID),
-            messageNumber,
-            escapeJson(messageHash),
-            escapeJson(recipient),
-            escapeJson(messageText),
-            escapeJson(status)
-    );
+    Path filePath = Path.of("stored_messages.json");
+    JsonArray messages = new JsonArray();
 
-    try (FileWriter writer =
-                 new FileWriter("stored_messages.json", true)) {
+    try {
+        // Read existing messages so they are not lost.
+        if (Files.exists(filePath)
+                && Files.size(filePath) > 0) {
 
-        writer.write(json);
+            String existingJson = Files.readString(
+                    filePath,
+                    StandardCharsets.UTF_8
+            ).trim();
 
-    } catch (IOException e) {
+            if (!existingJson.isEmpty()) {
+                JsonElement jsonElement =
+                        JsonParser.parseString(existingJson);
 
+                if (!jsonElement.isJsonArray()) {
+                    System.out.println(
+                            "Error: JSON file must contain an array."
+                    );
+                    return;
+                }
+
+                messages = jsonElement.getAsJsonArray();
+            }
+        }
+
+        // Create a JSON object for the current message.
+        JsonObject messageObject = new JsonObject();
+        messageObject.addProperty("messageID", messageID);
+        messageObject.addProperty("messageNumber", messageNumber);
+        messageObject.addProperty("recipient", recipient);
+        messageObject.addProperty("messageText", messageText);
+        messageObject.addProperty("messageHash", messageHash);
+        messageObject.addProperty("status", status);
+
+        // Add the current message to the array.
+        messages.add(messageObject);
+
+        // Save all messages to the JSON file.
+        Files.writeString(
+                filePath,
+                gson.toJson(messages),
+                StandardCharsets.UTF_8
+        );
+
+        System.out.println("Message successfully stored.");
+
+    } catch (IOException | IllegalStateException
+            | com.google.gson.JsonParseException e) {
         System.out.println(
-                "Could not store the message: " + e.getMessage()
+                "Error storing message: " + e.getMessage()
         );
     }
 }
-
-    private String escapeJson(String value) {
-        return value.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
-    }
-
     public String getMessageID() {
         return messageID;
     }
@@ -187,3 +215,4 @@ public final class Message {
         return status;
     }
 }
+
