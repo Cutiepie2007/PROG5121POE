@@ -5,6 +5,7 @@
 package com.mycompany.prog5121poe;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main { 
     
@@ -115,7 +116,8 @@ public class Main {
             int numberOfMessages;
             try {
                 numberOfMessages = Integer.parseInt(scanner.nextLine());
-                if (numberOfMessages < 0) {
+                if (numberOfMessages >= 0) {
+                } else {
                     System.out.println(
                             "Please enter zero or a positive number."
                     );
@@ -131,6 +133,7 @@ public class Main {
 
             int messageNumber = 0;
             int totalSent = 0;
+            ArrayList<String> sentMessages = new ArrayList<>();
             boolean quit = false;
 
             while (!quit) {
@@ -241,6 +244,7 @@ public class Main {
 
                             if (action == 1) {
                                 totalSent++;
+                                sentMessages.add(message.printMessages());
                             }
 
                             System.out.println(
@@ -253,7 +257,18 @@ public class Main {
                        }
                 }
 
-                    case "2" -> System.out.println("Coming Soon.");
+                    case "2" -> {
+                        if (sentMessages.isEmpty()) {
+                            System.out.println("No recently sent messages.");
+                        } else {
+                            System.out.println("Recently Sent Messages:");
+
+                        for (int i = sentMessages.size() - 1; i >= 0; i--) {
+                              System.out.println("------------------------------");
+                              System.out.println(sentMessages.get(i));
+                        }
+                    }
+                }
                     case "3" -> {
                         quit = true;
                         System.out.println(
