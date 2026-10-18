@@ -13,6 +13,7 @@ public class Main {
         
         try (Scanner scanner= new Scanner(System.in)) {
         
+        // Will gather information from user and create a Login Object.
         System.out.println("================================");
         System.out.println("QUICKCHAT REGISTRATION");
         System.out.println("================================");
@@ -41,7 +42,8 @@ public class Main {
         );
         
         System.out.println(login.registerUser());
-    
+        
+        // Will validate users registration and print if any failed.
         System.out.println("================================");
         System.out.println("REGISTRATION RESULTS");
         System.out.println("================================");
@@ -84,6 +86,7 @@ public class Main {
                 );
                 return;
 } 
+        // Prompt user for login information and validate. 
         System.out.println("================================");
         System.out.println("LOGIN");
         System.out.println("================================");
@@ -112,7 +115,7 @@ public class Main {
             System.out.print(
                     "How many messages would you like to enter? "
             );
-
+            
             int numberOfMessages;
             try {
                 numberOfMessages = Integer.parseInt(scanner.nextLine());
@@ -133,9 +136,11 @@ public class Main {
 
             int messageNumber = 0;
             int totalSent = 0;
+            // Will hold information about a message the user has sent during there session.
             ArrayList<String> sentMessages = new ArrayList<>();
             boolean quit = false;
 
+            // Will loop through menu options until user wants to quit.
             while (!quit) {
 
                 System.out.println("\n================================");
@@ -147,6 +152,7 @@ public class Main {
                 String option = scanner.nextLine();
 
                 switch (option) {
+                    // Allow user to send a message. 
                     case "1" -> {
                         if (messageNumber >= numberOfMessages) {
                             System.out.println(
@@ -241,7 +247,8 @@ public class Main {
                             System.out.println(
                                     message.SentMessage(action)
                             );
-
+                            
+                            // Keep track of the amount of messages sent and add info to the list.
                             if (action == 1) {
                                 totalSent++;
                                 sentMessages.add(message.printMessages());
@@ -256,7 +263,8 @@ public class Main {
                             );
                        }
                 }
-
+                    
+                    // Print out all messages sent starting with most recent.
                     case "2" -> {
                         if (sentMessages.isEmpty()) {
                             System.out.println("No recently sent messages.");
@@ -269,6 +277,8 @@ public class Main {
                         }
                     }
                 }
+                    
+                    // Will exit the program and print amount of messages sent.
                     case "3" -> {
                         quit = true;
                         System.out.println(
