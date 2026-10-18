@@ -12,7 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Random;
-
+/** 
+* Will handle quick chat messages and allow for checks to be made
+* on them as well as hashing and JSON.
+*/ 
 public final class Message {
 
     private final String messageID;
@@ -38,6 +41,7 @@ public final class Message {
         this.status = "Pending";
     }
 
+    // Creates a random message id of ten digits long.
     private String generateMessageID() {
         Random random = new Random();
         long number = 1_000_000_000L
@@ -46,11 +50,13 @@ public final class Message {
         return String.valueOf(number);
     }
 
+    // Tests to make sure there are ten digits in the id.
     public boolean checkMessageID() {
         return messageID != null
                 && messageID.matches("\\d{10}");
     }
 
+    // Tests if the number the user wants to send the message to is valid using java regex (Oracle, n.d.). 
     public String checkRecipientCell() {
 
         if (recipient != null
@@ -60,6 +66,7 @@ public final class Message {
         return "Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.";
     }
 
+    // Ensures the message is not blank and that it is under 250 characters.
     public String checkMessageLength() {
 
         if (messageText == null || messageText.trim().isEmpty()) {
@@ -75,6 +82,7 @@ public final class Message {
                 + "; please reduce the size.";
     }
 
+    // Hashes the message with the message id number and first and last word. 
     public String createMessageHash() {
         if(messageText == null || messageText.trim().isEmpty()) {
             return messageID.substring(0, 2)
@@ -92,10 +100,13 @@ public final class Message {
                 + lastWord).toUpperCase(Locale.ROOT);
     }
 
+    // Removes special characters from a word. 
     private String cleanWord(String word) {
         return word.replaceAll("[^A-Za-z0-9]", "");
     }
 
+    // Allows the user to decide if they want to send the message or ignore it or save it. 
+    // Changes status of the message depending on users input.
     public String SentMessage(int choice) {
         switch (choice) {
             case 1 -> {
@@ -120,6 +131,7 @@ public final class Message {
         }
     }
 
+    // Will return the information about the message. 
     public String printMessages() {
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
@@ -127,9 +139,12 @@ public final class Message {
                 + "\nMessage: " + messageText;
     }
 
+    // Returns 1 if message was sent else it will return 0.
     public int returnTotalMessagess() {
         return "Sent".equals(status) ? 1 : 0;
     }
+    
+    // Will take the json that already exists and append the message to it and write the new message array to the json.
 public void storeMessage() {
     Gson gson = new GsonBuilder()
             .setPrettyPrinting()
@@ -191,6 +206,8 @@ public void storeMessage() {
         );
     }
 }
+
+    // Getters for each variable in the class. 
     public String getMessageID() {
         return messageID;
     }
