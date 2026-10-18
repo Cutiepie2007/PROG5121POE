@@ -8,7 +8,7 @@ package com.mycompany.prog5121poe;
  *
  * @author Student
  */
-//Private variables to store user's data securely
+//Holds the users information and allows user to register and login.
 public class Login {
     private String firstName;
     private String lastName;
@@ -17,7 +17,7 @@ public class Login {
     private String cellPhoneNumber;
     private String loginUsername;
     
-
+// Sets up the users information once the Login class has been instantiated.
 public Login(String firstName, String lastName, String username, String password, String cellPhoneNumber) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -73,10 +73,12 @@ public void setLoginUsername(String loginUsername) {
     this.loginUsername = loginUsername;
 }
 
+// Ensures username has an _ in it and does not exceed 5 characters. 
 public boolean checkUserName() {
     return username.contains("_") && username.length() <=5;
 }
 
+// Makes sure the password meets all criteria.
 public boolean checkPasswordComplexity() {
     return password.length()>= 8
             && password.matches(".*[A-Z].*")
@@ -87,7 +89,7 @@ public boolean checkPasswordComplexity() {
 public boolean checkCellPhoneNumber() {
     return cellPhoneNumber.matches("^\\+27\\d{9}$");
 }
-//User validation check
+// Goes through every requirement to see if user can register.
 public String registerUser() {
   
     if(!checkUserName()){
@@ -108,11 +110,13 @@ public void setLoginname(String loginUserName) {
     this.loginUsername = loginUserName;
 }
 
+// Compares the information entered to what is registered.
 public boolean loginUser(String username, String password) {
         return username.equals(this.username)
                 && password.equals(this.password);
 }
-//Login status message
+
+// Tells the user they have successfully logged in or if they have failed. 
 public String returnLoginStatus(String loginUserName, String loginPassword) {
     if (loginUser(loginUsername, loginPassword)){
         return "Welcome " +firstName+ " " +lastName+ " it is great to see you again.";
