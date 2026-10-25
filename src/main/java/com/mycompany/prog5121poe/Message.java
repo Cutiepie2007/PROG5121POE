@@ -114,21 +114,25 @@ public final class Message {
     // Process the user's choice for a message
     public String SentMessage(int choice) {
         switch (choice) {
-            case 1:
+            case 1 -> {
                 status = "Sent";
                 return "Message successfully sent.";
+            }
 
-            case 2:
+            case 2 -> {
                 status = "Disregarded";
                 return "Press 0 to delete the message.";
+            }
 
-            case 3:
+            case 3 -> {
                 status = "Stored";
                 storeMessage();
                 return "Message successfully stored.";
+            }
 
-            default:
+            default -> {
                 return "Invalid option. Message remains pending.";
+            }
         }
     }
 
