@@ -625,4 +625,387 @@ public class Main {
             }
         }
     }
+    // ==========================================
+    // DISPLAY SENDER AND RECIPIENT
+    // ==========================================
+
+    public static void displaySenderAndRecipient() {
+
+        if (storedCount == 0) {
+
+            System.out.println(
+                    "No stored messages."
+            );
+
+            return;
+        }
+
+        System.out.println(
+                "\nSender and Recipient:"
+        );
+
+        for (int i = 0;
+                i < storedCount;
+                i++) {
+
+            Message message =
+                    storedMessages[i];
+
+            System.out.println(
+                    "Sender: QuickChat User"
+            );
+
+            System.out.println(
+                    "Recipient: "
+                    + message.getRecipient()
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+    }
+
+    // ==========================================
+    // FIND LONGEST STORED MESSAGE
+    // ==========================================
+
+    public static String getLongestStoredMessage() {
+
+        if (storedCount == 0) {
+            return "";
+        }
+
+        Message longest =
+                storedMessages[0];
+
+        for (int i = 1;
+                i < storedCount;
+                i++) {
+
+            if (storedMessages[i]
+                    .getMessageText()
+                    .length()
+                    >
+                    longest
+                    .getMessageText()
+                    .length()) {
+
+                longest =
+                        storedMessages[i];
+            }
+        }
+
+        return longest.getMessageText();
+    }
+
+    public static void displayLongestStoredMessage() {
+
+        String longest =
+                getLongestStoredMessage();
+
+        if (longest.isEmpty()) {
+
+            System.out.println(
+                    "No stored messages."
+            );
+
+        } else {
+
+            System.out.println(
+                    "\nLongest Stored Message:"
+            );
+
+            System.out.println(longest);
+        }
+    }
+
+    // ==========================================
+    // SEARCH MESSAGE ID
+    // ==========================================
+
+    public static void searchMessageID(
+            Scanner scanner) {
+
+        System.out.print(
+                "Enter message ID: "
+        );
+
+        String searchID =
+                scanner.nextLine();
+
+        boolean found = false;
+
+        for (int i = 0;
+                i < storedCount;
+                i++) {
+
+            Message message =
+                    storedMessages[i];
+
+            if (message.getMessageID()
+                    .equals(searchID)) {
+
+                System.out.println(
+                        "\nRecipient: "
+                        + message.getRecipient()
+                );
+
+                System.out.println(
+                        "Message: "
+                        + message.getMessageText()
+                );
+
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+
+            System.out.println(
+                    "Message ID not found."
+            );
+        }
+    }
+
+    // ==========================================
+    // SEARCH BY RECIPIENT
+    // ==========================================
+
+    public static void searchMessagesByRecipient(
+            Scanner scanner) {
+
+        System.out.print(
+                "Enter recipient number: "
+        );
+
+        String searchRecipient =
+                scanner.nextLine();
+
+        boolean found = false;
+
+        System.out.println(
+                "\nMessages for recipient:"
+        );
+
+        for (int i = 0;
+                i < storedCount;
+                i++) {
+
+            Message message =
+                    storedMessages[i];
+
+            if (message.getRecipient()
+                    .equals(searchRecipient)) {
+
+                System.out.println(
+                        message.getMessageText()
+                );
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+
+            System.out.println(
+                    "No messages found for this recipient."
+            );
+        }
+    }
+
+    // ==========================================
+    // DELETE MESSAGE USING HASH
+    // ==========================================
+
+    public static void deleteMessageByHash(
+            Scanner scanner) {
+
+        System.out.print(
+                "Enter message hash: "
+        );
+
+        String searchHash =
+                scanner.nextLine();
+
+        Path filePath =
+                Path.of("stored_messages.json");
+
+        try {
+
+            if (!Files.exists(filePath)) {
+
+                System.out.println(
+                        "No stored messages found."
+                );
+
+                return;
+            }
+
+            String json =
+                    Files.readString(
+                            filePath,
+                            StandardCharsets.UTF_8
+                    );
+
+            if (json.trim().isEmpty()) {
+
+                System.out.println(
+                        "No stored messages found."
+                );
+
+                return;
+            }
+
+            JsonArray messages =
+                    JsonParser
+                            .parseString(json)
+                            .getAsJsonArray();
+
+            JsonArray remainingMessages =
+                    new JsonArray();
+
+            boolean found = false;
+
+            for (JsonElement element :
+                    messages) {
+
+                JsonObject object =
+                        element.getAsJsonObject();
+
+                String hash =
+                        object.get("messageHash")
+                                .getAsString();
+
+                if (hash.equals(searchHash)) {
+
+                    found = true;
+
+                } else {
+
+                    remainingMessages.add(object);
+                }
+            }
+
+            if (found) {
+
+                Gson gson =
+                        new GsonBuilder()
+                                .setPrettyPrinting()
+                                .create();
+
+                Files.writeString(
+                        filePath,
+                        gson.toJson(remainingMessages),
+                        StandardCharsets.UTF_8
+                );
+
+                loadStoredMessagesFromJson();
+
+                System.out.println(
+                        "Message successfully deleted."
+                );
+
+            } else {
+
+                System.out.println(
+                        "Message hash not found."
+                );
+            }
+
+        } catch (IOException |
+                IllegalStateException |
+                com.google.gson.JsonParseException e) {
+
+            System.out.println(
+                    "Error deleting message: "
+                    + e.getMessage()
+            );
+        }
+    }
+
+    // ==========================================
+    // DISPLAY FULL STORED MESSAGE REPORT
+    // ==========================================
+
+    public static void displayReport() {
+
+        if (storedCount == 0) {
+
+            System.out.println(
+                    "No stored messages."
+            );
+
+            return;
+        }
+
+        System.out.println(
+                "\n================================"
+        );
+
+        System.out.println(
+                "STORED MESSAGE REPORT"
+        );
+
+        System.out.println(
+                "================================"
+        );
+
+        for (int i = 0;
+                i < storedCount;
+                i++) {
+
+            Message message =
+                    storedMessages[i];
+
+            System.out.println(
+                    "Message ID: "
+                    + message.getMessageID()
+            );
+
+            System.out.println(
+                    "Message Hash: "
+                    + message.getMessageHash()
+            );
+
+            System.out.println(
+                    "Recipient: "
+                    + message.getRecipient()
+            );
+
+            System.out.println(
+                    "Message: "
+                    + message.getMessageText()
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+    }
+
+    // ==========================================
+    // GETTERS FOR PART 3 ARRAYS
+    // ==========================================
+
+    public static Message[] getSentMessages() {
+        return sentMessages;
+    }
+
+    public static Message[] getDisregardedMessages() {
+        return disregardedMessages;
+    }
+
+    public static Message[] getStoredMessages() {
+        return storedMessages;
+    }
+
+    public static String[] getMessageHashes() {
+        return messageHashes;
+    }
+
+    public static String[] getMessageIDs() {
+        return messageIDs;
+    }
 }
