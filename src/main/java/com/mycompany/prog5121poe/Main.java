@@ -312,6 +312,48 @@ public class Main {
                             if (action != 3) {
                                 System.out.println(actionResult);
                             }
+                            // ==============================
+                            // PART 3 ARRAYS
+                            // ==============================
+
+                            // Store message ID
+                            if (idCount < messageIDs.length) {
+
+                                messageIDs[idCount] =
+                                        message.getMessageID();
+
+                                idCount++;
+                            }
+
+                            // Store message hash
+                            if (hashCount < messageHashes.length) {
+
+                                messageHashes[hashCount] =
+                                        message.getMessageHash();
+
+                                hashCount++;
+                            }
+
+                            // ==============================
+                            // SENT MESSAGE
+                            // ==============================
+
+                            if (action == 1) {
+
+                                totalSent++;
+
+                                recentSentMessages.add(
+                                        message.printMessages()
+                                );
+
+                                if (sentCount < sentMessages.length) {
+
+                                    sentMessages[sentCount] =
+                                            message;
+
+                                    sentCount++;
+                                }
+                            }
                         }
                     }
                 }
