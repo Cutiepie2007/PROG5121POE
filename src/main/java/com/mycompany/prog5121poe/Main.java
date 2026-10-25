@@ -311,7 +311,7 @@ public class Main {
                             String actionResult = message.SentMessage(action);
                             if (action != 3) {
                                 System.out.println(actionResult);
-                            }
+}
                             // ==============================
                             // PART 3 ARRAYS
                             // ==============================
@@ -354,9 +354,274 @@ public class Main {
                                     sentCount++;
                                 }
                             }
+
+                            // ==============================
+                            // DISREGARDED MESSAGE
+                            // ==============================
+
+                            if (action == 2) {
+
+                                if (disregardedCount
+                                        < disregardedMessages.length) {
+
+                                    disregardedMessages[
+                                            disregardedCount
+                                    ] = message;
+
+                                    disregardedCount++;
+                                }
+                            }
+
+                            // ==============================
+                            // STORED MESSAGE
+                            // ==============================
+
+                            if (action == 3) {
+
+                                loadStoredMessagesFromJson();
+
+                                System.out.println(
+                                        "Message successfully stored."
+                                );
+                            }
+
+                            // Display complete message
+                            System.out.println(
+                                    "\nFull message details:"
+                            );
+
+                            System.out.println(
+                                    message.printMessages()
+                            );
                         }
                     }
+
+                    // ==============================
+                    // OPTION 2 - RECENTLY SENT
+                    // ==============================
+
+                    case "2" -> {
+
+                        if (recentSentMessages.isEmpty()) {
+
+                            System.out.println(
+                                    "No recently sent messages."
+                            );
+
+                        } else {
+
+                            System.out.println(
+                                    "Recently Sent Messages:"
+                            );
+
+                            for (int i =
+                                    recentSentMessages.size() - 1;
+                                    i >= 0;
+                                    i--) {
+
+                                System.out.println(
+                                        "------------------------------"
+                                );
+
+                                System.out.println(
+                                        recentSentMessages.get(i)
+                                );
+                            }
+                        }
+                    }
+
+                    // ==============================
+                    // OPTION 3 - QUIT
+                    // ==============================
+
+                    case "3" -> {
+
+                        quit = true;
+
+                        System.out.println(
+                                "Total messages sent: "
+                                + totalSent
+                        );
+
+                        System.out.println(
+                                "Thank you for using QuickChat."
+                        );
+                    }
+
+                    // ==============================
+                    // OPTION 4 - STORED MESSAGES
+                    // ==============================
+
+                    case "4" -> {
+
+                        loadStoredMessagesFromJson();
+
+                        storedMessagesMenu(scanner);
+                    }
+
+                    default -> System.out.println(
+                            "Invalid option. Please choose 1, 2, 3 or 4."
+                    );
                 }
+            }
+        }
+    }
+
+    // ==========================================
+    // LOAD STORED MESSAGES FROM JSON
+    // ==========================================
+
+    public static void loadStoredMessagesFromJson() {
+
+        Path filePath =
+                Path.of("stored_messages.json");
+
+        storedCount = 0;
+
+        try {
+
+            if (!Files.exists(filePath)
+                    || Files.size(filePath) == 0) {
+
+                return;
+            }
+
+            String json =
+                    Files.readString(
+                            filePath,
+                            StandardCharsets.UTF_8
+                    );
+
+            if (json.trim().isEmpty()) {
+                return;
+            }
+
+            JsonElement jsonElement =
+                    JsonParser.parseString(json);
+
+            if (!jsonElement.isJsonArray()) {
+                return;
+            }
+
+            JsonArray messages =
+                    jsonElement.getAsJsonArray();
+
+            Gson gson = new Gson();
+
+            for (JsonElement element : messages) {
+
+                if (storedCount >= storedMessages.length) {
+                    break;
+                }
+
+                Message message =
+                        gson.fromJson(
+                                element,
+                                Message.class
+                        );
+
+                storedMessages[storedCount] =
+                        message;
+
+                storedCount++;
+            }
+
+        } catch (IOException |
+                IllegalStateException |
+                com.google.gson.JsonParseException e) {
+
+            System.out.println(
+                    "Error loading stored messages: "
+                    + e.getMessage()
+            );
+        }
+    }
+
+    // ==========================================
+    // STORED MESSAGES MENU
+    // ==========================================
+
+    public static void storedMessagesMenu(
+            Scanner scanner) {
+
+        boolean back = false;
+
+        while (!back) {
+
+            System.out.println(
+                    "\n================================"
+            );
+
+            System.out.println(
+                    "STORED MESSAGES"
+            );
+
+            System.out.println(
+                    "================================"
+            );
+
+            System.out.println(
+                    "1) Display sender and recipient"
+            );
+
+            System.out.println(
+                    "2) Display longest stored message"
+            );
+
+            System.out.println(
+                    "3) Search for message ID"
+            );
+
+            System.out.println(
+                    "4) Search messages by recipient"
+            );
+
+            System.out.println(
+                    "5) Delete message using message hash"
+            );
+
+            System.out.println(
+                    "6) Display full report"
+            );
+
+            System.out.println(
+                    "7) Back to QuickChat menu"
+            );
+
+            System.out.print(
+                    "Choose an option: "
+            );
+
+            String choice =
+                    scanner.nextLine();
+
+            switch (choice) {
+
+                case "1" ->
+                        displaySenderAndRecipient();
+
+                case "2" ->
+                        displayLongestStoredMessage();
+
+                case "3" ->
+                        searchMessageID(scanner);
+
+                case "4" ->
+                        searchMessagesByRecipient(scanner);
+
+                case "5" ->
+                        deleteMessageByHash(scanner);
+
+                case "6" ->
+                        displayReport();
+
+                case "7" ->
+                        back = true;
+
+                default ->
+                        System.out.println(
+                                "Invalid option."
+                        );
             }
         }
     }
