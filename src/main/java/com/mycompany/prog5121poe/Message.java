@@ -3,19 +3,16 @@ package com.mycompany.prog5121poe;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Random;
-/** 
-* Will handle quick chat messages and allow for checks to be made
-* on them as well as hashing and JSON.
-*/ 
+
 public final class Message {
 
     private final String messageID;
@@ -23,52 +20,61 @@ public final class Message {
     private final String recipient;
     private final String messageText;
     private final String messageHash;
-
     private String status;
 
-    public Message(
-            int messageNumber,
-            String recipient,
-            String messageText) {
-
+    // Constructor for creating a new message
+    public Message(int messageNumber, String recipient, String messageText) {
         this.messageNumber = messageNumber;
         this.recipient = recipient;
         this.messageText = messageText;
-
         this.messageID = generateMessageID();
         this.messageHash = createMessageHash();
-
         this.status = "Pending";
     }
 
-    // Creates a random message id of ten digits long.
+    // Constructor for loading an existing message from JSON
+    public Message(
+            int messageNumber,
+            String messageID,
+            String recipient,
+            String messageText,
+            String messageHash,
+            String status) {
+
+        this.messageNumber = messageNumber;
+        this.messageID = messageID;
+        this.recipient = recipient;
+        this.messageText = messageText;
+        this.messageHash = messageHash;
+        this.status = status;
+    }
+
+    // Generate a random ten-digit message ID
     private String generateMessageID() {
         Random random = new Random();
+
         long number = 1_000_000_000L
                 + (long) (random.nextDouble() * 9_000_000_000L);
 
         return String.valueOf(number);
     }
 
-    // Tests to make sure there are ten digits in the id.
+    // Check that the message ID contains ten digits
     public boolean checkMessageID() {
-        return messageID != null
-                && messageID.matches("\\d{10}");
+        return messageID != null && messageID.matches("\\d{10}");
     }
 
-    // Tests if the number the user wants to send the message to is valid using java regex (Oracle, n.d.). 
+    // Validate the recipient's South African cellphone number
     public String checkRecipientCell() {
-
-        if (recipient != null
-                && recipient.matches("^\\+27\\d{9}$")) {
+        if (recipient != null && recipient.matches("^\\+27\\d{9}$")) {
             return "Cell phone number successfully captured.";
         }
+
         return "Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.";
     }
 
-    // Ensures the message is not blank and that it is under 250 characters.
+    // Check that the message is not empty and does not exceed 250 characters
     public String checkMessageLength() {
-
         if (messageText == null || messageText.trim().isEmpty()) {
             return "Please enter a message.";
         }
@@ -82,56 +88,51 @@ public final class Message {
                 + "; please reduce the size.";
     }
 
-    // Hashes the message with the message id number and first and last word. 
+    // Create the message hash
     public String createMessageHash() {
-        if(messageText == null || messageText.trim().isEmpty()) {
+        if (messageText == null || messageText.trim().isEmpty()) {
             return messageID.substring(0, 2)
                     + ":" + messageNumber + ":";
         }
+
         String[] words = messageText.trim().split("\\s+");
 
         String firstWord = cleanWord(words[0]);
         String lastWord = cleanWord(words[words.length - 1]);
 
         String firstTwoIDDigits = messageID.substring(0, 2);
-        return (firstTwoIDDigits
-                + ":" + messageNumber
-                + ":" + firstWord
-                + lastWord).toUpperCase(Locale.ROOT);
+
+        return (firstTwoIDDigits + ":" + messageNumber + ":"
+                + firstWord + lastWord).toUpperCase(Locale.ROOT);
     }
 
-    // Removes special characters from a word. 
+    // Remove punctuation from the first and last words
     private String cleanWord(String word) {
         return word.replaceAll("[^A-Za-z0-9]", "");
     }
 
-    // Allows the user to decide if they want to send the message or ignore it or save it. 
-    // Changes status of the message depending on users input.
+    // Process the user's choice for a message
     public String SentMessage(int choice) {
         switch (choice) {
-            case 1 -> {
+            case 1:
                 status = "Sent";
                 return "Message successfully sent.";
-            }
 
-            case 2 -> {
+            case 2:
                 status = "Disregarded";
                 return "Press 0 to delete the message.";
-            }
 
-            case 3 -> {
+            case 3:
                 status = "Stored";
                 storeMessage();
                 return "Message successfully stored.";
-            }
 
-            default -> {
+            default:
                 return "Invalid option. Message remains pending.";
-            }
         }
     }
 
-    // Will return the information about the message. 
+    // Display the message details
     public String printMessages() {
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
@@ -139,75 +140,69 @@ public final class Message {
                 + "\nMessage: " + messageText;
     }
 
-    // Returns 1 if message was sent else it will return 0.
+    // Return 1 if the message was sent, otherwise return 0
     public int returnTotalMessagess() {
         return "Sent".equals(status) ? 1 : 0;
     }
-    
-    // Will take the json that already exists and append the message to it and write the new message array to the json.
-public void storeMessage() {
-    Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .create();
 
-    Path filePath = Path.of("stored_messages.json");
-    JsonArray messages = new JsonArray();
+    // Store the message in a JSON file
+    public void storeMessage() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    try {
-        // Read existing messages so they are not lost.
-        if (Files.exists(filePath)
-                && Files.size(filePath) > 0) {
+        Path filePath = Path.of("stored_messages.json");
+        JsonArray messages = new JsonArray();
 
-            String existingJson = Files.readString(
-                    filePath,
-                    StandardCharsets.UTF_8
-            ).trim();
+        try {
+            if (Files.exists(filePath) && Files.size(filePath) > 0) {
+                String existingJson = Files.readString(
+                        filePath, StandardCharsets.UTF_8
+                ).trim();
 
-            if (!existingJson.isEmpty()) {
-                JsonElement jsonElement =
-                        JsonParser.parseString(existingJson);
+                if (!existingJson.isEmpty()) {
+                    JsonElement jsonElement =
+                            JsonParser.parseString(existingJson);
 
-                if (!jsonElement.isJsonArray()) {
-                    System.out.println(
-                            "Error: JSON file must contain an array."
-                    );
-                    return;
+                    if (!jsonElement.isJsonArray()) {
+                        System.out.println(
+                                "Error: JSON file must contain an array."
+                        );
+                        return;
+                    }
+
+                    messages = jsonElement.getAsJsonArray();
                 }
-
-                messages = jsonElement.getAsJsonArray();
             }
+
+            JsonObject messageObject = new JsonObject();
+
+            messageObject.addProperty("messageID", messageID);
+            messageObject.addProperty("messageNumber", messageNumber);
+            messageObject.addProperty("recipient", recipient);
+            messageObject.addProperty("messageText", messageText);
+            messageObject.addProperty("messageHash", messageHash);
+            messageObject.addProperty("status", status);
+
+            messages.add(messageObject);
+
+            Files.writeString(
+                    filePath,
+                    gson.toJson(messages),
+                    StandardCharsets.UTF_8
+            );
+
+            System.out.println("Message successfully stored.");
+
+        } catch (IOException
+                | IllegalStateException
+                | com.google.gson.JsonParseException e) {
+
+            System.out.println(
+                    "Error storing message: " + e.getMessage()
+            );
         }
-
-        // Create a JSON object for the current message.
-        JsonObject messageObject = new JsonObject();
-        messageObject.addProperty("messageID", messageID);
-        messageObject.addProperty("messageNumber", messageNumber);
-        messageObject.addProperty("recipient", recipient);
-        messageObject.addProperty("messageText", messageText);
-        messageObject.addProperty("messageHash", messageHash);
-        messageObject.addProperty("status", status);
-
-        // Add the current message to the array.
-        messages.add(messageObject);
-
-        // Save all messages to the JSON file.
-        Files.writeString(
-                filePath,
-                gson.toJson(messages),
-                StandardCharsets.UTF_8
-        );
-
-        System.out.println("Message successfully stored.");
-
-    } catch (IOException | IllegalStateException
-            | com.google.gson.JsonParseException e) {
-        System.out.println(
-                "Error storing message: " + e.getMessage()
-        );
     }
-}
 
-    // Getters for each variable in the class. 
+    // Getters
     public String getMessageID() {
         return messageID;
     }
