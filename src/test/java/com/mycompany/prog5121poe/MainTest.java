@@ -166,4 +166,46 @@ public class MainTest {
                 Main.getLongestStoredMessage()
         );
     }
+
+    // Test 3: Search for message ID
+    @Test
+    public void testSearchMessageID() {
+
+        Main.storedMessages[0] = message4;
+        Main.storedCount = 1;
+
+        try (Scanner scanner = new Scanner("0838884567")) {
+
+            Main.searchMessageID(scanner);
+
+            String result = output.toString();
+
+            assertTrue(result.contains("0838884567"));
+            assertTrue(result.contains("It is dinner time!"));
+        }
+    }
+
+    // Test 4: Search all messages for a particular recipient
+    @Test
+    public void testSearchMessagesByRecipient() {
+
+        try (Scanner scanner = new Scanner("+27838884567")) {
+
+            Main.searchMessagesByRecipient(scanner);
+
+            String result = output.toString();
+
+            assertTrue(
+                    result.contains(
+                            "Where are you? You are late! I have asked you to be on time."
+                    )
+            );
+
+            assertTrue(
+                    result.contains(
+                            "Ok, I am leaving without you."
+                    )
+            );
+        }
+    }
 }
