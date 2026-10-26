@@ -136,4 +136,21 @@ public class MainTest {
             Files.deleteIfExists(jsonPath);
         }
     }
+
+    // Test 1: Sent Messages array correctly populated
+    @Test
+    public void testSentMessagesArray() {
+
+        assertEquals(2, Main.sentCount);
+
+        assertEquals(
+                "Did you get the cake?",
+                Main.sentMessages[0].getMessageText()
+        );
+
+        assertEquals(
+                "It is dinner time!",
+                Main.sentMessages[1].getMessageText()
+        );
+    }
 }
