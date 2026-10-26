@@ -153,4 +153,17 @@ public class MainTest {
                 Main.sentMessages[1].getMessageText()
         );
     }
+
+    // Test 2: Display the longest stored message
+    @Test
+    public void testLongestStoredMessage() {
+
+        String expected =
+                "Where are you? You are late! I have asked you to be on time.";
+
+        assertEquals(
+                expected,
+                Main.getLongestStoredMessage()
+        );
+    }
 }
