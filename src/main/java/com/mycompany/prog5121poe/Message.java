@@ -61,12 +61,15 @@ public final class Message {
 
     // Check that the message ID contains ten digits
     public boolean checkMessageID() {
-        return messageID != null && messageID.matches("\\d{10}");
+        return messageID != null
+                && messageID.matches("\\d{10}");
     }
 
     // Validate the recipient's South African cellphone number
     public String checkRecipientCell() {
-        if (recipient != null && recipient.matches("^\\+27\\d{9}$")) {
+        if (recipient != null
+                && recipient.matches("^\\+27\\d{9}$")) {
+
             return "Cell phone number successfully captured.";
         }
 
@@ -75,7 +78,10 @@ public final class Message {
 
     // Check that the message is not empty and does not exceed 250 characters
     public String checkMessageLength() {
-        if (messageText == null || messageText.trim().isEmpty()) {
+
+        if (messageText == null
+                || messageText.trim().isEmpty()) {
+
             return "Please enter a message.";
         }
 
@@ -90,30 +96,63 @@ public final class Message {
 
     // Create the message hash
     public String createMessageHash() {
-        if (messageText == null || messageText.trim().isEmpty()) {
+
+        if (messageID == null) {
+            return "";
+        }
+
+        if (messageText == null
+                || messageText.trim().isEmpty()) {
+
             return messageID.substring(0, 2)
                     + ":" + messageNumber + ":";
         }
 
         String[] words = messageText.trim().split("\\s+");
 
-        String firstWord = cleanWord(words[0]);
-        String lastWord = cleanWord(words[words.length - 1]);
+        String firstWord = "";
+        String lastWord = "";
+
+        for (String word : words) {
+            String cleanedWord = cleanWord(word);
+
+            if (!cleanedWord.isEmpty()) {
+                firstWord = cleanedWord;
+                break;
+            }
+        }
+
+        for (int i = words.length - 1; i >= 0; i--) {
+            String cleanedWord = cleanWord(words[i]);
+
+            if (!cleanedWord.isEmpty()) {
+                lastWord = cleanedWord;
+                break;
+            }
+        }
 
         String firstTwoIDDigits = messageID.substring(0, 2);
 
-        return (firstTwoIDDigits + ":" + messageNumber + ":"
-                + firstWord + lastWord).toUpperCase(Locale.ROOT);
+        return (firstTwoIDDigits
+                + ":"
+                + messageNumber
+                + ":"
+                + firstWord
+                + ":"
+                + lastWord)
+                .toUpperCase(Locale.ROOT);
     }
 
-    // Remove punctuation from the first and last words
+    // Remove punctuation from a word
     private String cleanWord(String word) {
         return word.replaceAll("[^A-Za-z0-9]", "");
     }
 
     // Process the user's choice for a message
     public String SentMessage(int choice) {
+
         switch (choice) {
+
             case 1 -> {
                 status = "Sent";
                 return "Message successfully sent.";
@@ -138,6 +177,7 @@ public final class Message {
 
     // Display the message details
     public String printMessages() {
+
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
                 + "\nRecipient: " + recipient
@@ -151,25 +191,30 @@ public final class Message {
 
     // Store the message in a JSON file
     public void storeMessage() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
 
         Path filePath = Path.of("stored_messages.json");
         JsonArray messages = new JsonArray();
 
         try {
-            if (Files.exists(filePath) && Files.size(filePath) > 0) {
+
+            if (Files.exists(filePath)
+                    && Files.size(filePath) > 0) {
+
                 String existingJson = Files.readString(
-                        filePath, StandardCharsets.UTF_8
+                        filePath,
+                        StandardCharsets.UTF_8
                 ).trim();
 
                 if (!existingJson.isEmpty()) {
+
                     JsonElement jsonElement =
                             JsonParser.parseString(existingJson);
 
                     if (!jsonElement.isJsonArray()) {
-                        System.out.println(
-                                "Error: JSON file must contain an array."
-                        );
                         return;
                     }
 
@@ -179,12 +224,35 @@ public final class Message {
 
             JsonObject messageObject = new JsonObject();
 
-            messageObject.addProperty("messageID", messageID);
-            messageObject.addProperty("messageNumber", messageNumber);
-            messageObject.addProperty("recipient", recipient);
-            messageObject.addProperty("messageText", messageText);
-            messageObject.addProperty("messageHash", messageHash);
-            messageObject.addProperty("status", status);
+            messageObject.addProperty(
+                    "messageID",
+                    messageID
+            );
+
+            messageObject.addProperty(
+                    "messageNumber",
+                    messageNumber
+            );
+
+            messageObject.addProperty(
+                    "recipient",
+                    recipient
+            );
+
+            messageObject.addProperty(
+                    "messageText",
+                    messageText
+            );
+
+            messageObject.addProperty(
+                    "messageHash",
+                    messageHash
+            );
+
+            messageObject.addProperty(
+                    "status",
+                    status
+            );
 
             messages.add(messageObject);
 
@@ -194,14 +262,13 @@ public final class Message {
                     StandardCharsets.UTF_8
             );
 
-            System.out.println("Message successfully stored.");
-
         } catch (IOException
                 | IllegalStateException
                 | com.google.gson.JsonParseException e) {
 
             System.out.println(
-                    "Error storing message: " + e.getMessage()
+                    "Error storing message: "
+                    + e.getMessage()
             );
         }
     }
@@ -231,4 +298,3 @@ public final class Message {
         return status;
     }
 }
-
