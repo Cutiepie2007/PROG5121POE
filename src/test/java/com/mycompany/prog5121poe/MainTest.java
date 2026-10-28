@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ public class MainTest {
         output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
 
-        Path jsonPath = Paths.get("stored_messages.json");
+        Path jsonPath = Path.of("stored_messages.json");
 
         jsonFileExists = Files.exists(jsonPath);
 
@@ -47,30 +47,30 @@ public class MainTest {
         // Test Data Message 1
         message1 = new Message(
                 1,
-                "0834557896",
+                "1000000001",
                 "+27834557896",
                 "Did you get the cake?",
-                "AA:1:DIDCAKE",
+                "10:1:DID:CAKE",
                 "Sent"
         );
 
         // Test Data Message 2
         message2 = new Message(
                 2,
-                "0838884567",
+                "1000000002",
                 "+27838884567",
                 "Where are you? You are late! I have asked you to be on time.",
-                "AA:2:WHERE",
+                "10:2:WHERE:TIME",
                 "Stored"
         );
 
         // Test Data Message 3
         message3 = new Message(
                 3,
-                "0833444567",
+                "1000000003",
                 "+27834484567",
                 "Yohoooo, I am at your gate.",
-                "AA:3:YOHO",
+                "10:3:YOHOOO:GATE",
                 "Disregarded"
         );
 
@@ -79,18 +79,18 @@ public class MainTest {
                 4,
                 "0838884567",
                 "0838884567",
-                "It is dinner time!",
-                "AA:4:DINNER",
+                "It is dinner time !",
+                "08:4:IT:TIME",
                 "Sent"
         );
 
         // Test Data Message 5
         message5 = new Message(
                 5,
-                "0838884568",
+                "1000000005",
                 "+27838884567",
                 "Ok, I am leaving without you.",
-                "AA:5:LEAVING",
+                "10:5:OK:YOU",
                 "Stored"
         );
 
@@ -128,7 +128,7 @@ public class MainTest {
 
         System.setOut(originalOut);
 
-        Path jsonPath = Paths.get("stored_messages.json");
+        Path jsonPath = Path.of("stored_messages.json");
 
         if (jsonFileExists) {
             Files.write(jsonPath, originalJson);
@@ -137,7 +137,7 @@ public class MainTest {
         }
     }
 
-    // Test 1: Sent Messages array correctly populated
+    // Test 1: Sent Messages array
     @Test
     public void testSentMessagesArray() {
 
@@ -149,12 +149,12 @@ public class MainTest {
         );
 
         assertEquals(
-                "It is dinner time!",
+                "It is dinner time !",
                 Main.sentMessages[1].getMessageText()
         );
     }
 
-    // Test 2: Display the longest stored message
+    // Test 2: Longest stored message
     @Test
     public void testLongestStoredMessage() {
 
@@ -167,12 +167,9 @@ public class MainTest {
         );
     }
 
-    // Test 3: Search for message ID
+    // Test 3: Search for Message 4 by Message ID
     @Test
     public void testSearchMessageID() {
-
-        Main.storedMessages[0] = message4;
-        Main.storedCount = 1;
 
         try (Scanner scanner = new Scanner("0838884567")) {
 
@@ -181,11 +178,11 @@ public class MainTest {
             String result = output.toString();
 
             assertTrue(result.contains("0838884567"));
-            assertTrue(result.contains("It is dinner time!"));
+            assertTrue(result.contains("It is dinner time !"));
         }
     }
 
-    // Test 4: Search all messages for a particular recipient
+    // Test 4: Search all messages for a recipient
     @Test
     public void testSearchMessagesByRecipient() {
 
@@ -209,7 +206,7 @@ public class MainTest {
         }
     }
 
-    // Test 5: Delete a message using the message hash
+    // Test 5: Delete Message 2 using its Message Hash
     @Test
     public void testDeleteMessageByHash() throws Exception {
 
@@ -219,12 +216,13 @@ public class MainTest {
         jsonArray.add(gson.toJsonTree(message2));
         jsonArray.add(gson.toJsonTree(message5));
 
-        Files.write(
-                Paths.get("stored_messages.json"),
-                gson.toJson(jsonArray).getBytes()
+        Files.writeString(
+                Path.of("stored_messages.json"),
+                gson.toJson(jsonArray),
+                StandardCharsets.UTF_8
         );
 
-        try (Scanner scanner = new Scanner("AA:2:WHERE")) {
+        try (Scanner scanner = new Scanner("10:2:WHERE:TIME")) {
 
             Main.deleteMessageByHash(scanner);
 
@@ -235,10 +233,10 @@ public class MainTest {
             );
         }
 
-        // Reload the JSON file after deletion
+        // Reload the stored messages after deletion
         Main.loadStoredMessagesFromJson();
 
-        // Confirm that only Message 5 remains
+        // Only Message 5 should remain
         assertEquals(1, Main.storedCount);
 
         assertEquals(
@@ -246,19 +244,19 @@ public class MainTest {
                 Main.storedMessages[0].getMessageText()
         );
 
-        // Read the updated JSON file
+        // Check the updated JSON file
         String jsonContent = Files.readString(
-                Paths.get("stored_messages.json")
+                Path.of("stored_messages.json")
         );
 
-        // Confirm Message 5 is still stored in the JSON file
+        // Message 5 must still be present
         assertTrue(
                 jsonContent.contains(
                         "Ok, I am leaving without you."
                 )
         );
 
-        // Confirm Message 2 was removed from the JSON file
+        // Message 2 must have been deleted
         assertTrue(
                 !jsonContent.contains(
                         "Where are you? You are late! I have asked you to be on time."
@@ -266,7 +264,7 @@ public class MainTest {
         );
     }
 
-    // Test 6: Display Report
+    // Test 6: Display full report
     @Test
     public void testDisplayReport() {
 
@@ -276,21 +274,21 @@ public class MainTest {
 
         assertTrue(result.contains("Report"));
 
-        // Check Message Hash
-        assertTrue(result.contains("AA:1:DIDCAKE"));
-        assertTrue(result.contains("AA:5:LEAVING"));
+       // Message Hashes
+        assertTrue(result.contains("10:1:DID:CAKE"));
+        assertTrue(result.contains("08:4:IT:TIME"));
 
-        // Check Recipient
+       // Recipients
         assertTrue(result.contains("+27834557896"));
-        assertTrue(result.contains("+27838884567"));
+        assertTrue(result.contains("0838884567"));
 
-        // Check Message
+        // Messages
         assertTrue(
                 result.contains("Did you get the cake?")
         );
 
         assertTrue(
-                result.contains("Ok, I am leaving without you.")
+                result.contains("It is dinner time !")
         );
     }
 }
