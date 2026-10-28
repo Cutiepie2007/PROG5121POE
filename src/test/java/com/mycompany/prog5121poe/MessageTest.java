@@ -1,9 +1,22 @@
 package com.mycompany.prog5121poe;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageTest {
+
+    private final Path storedMessagesFile =
+            Path.of("stored_messages.json");
+
+    @AfterEach
+    public void cleanUp() throws Exception {
+        Files.deleteIfExists(storedMessagesFile);
+    }
 
     @Test
     public void testCheckMessageID() {
@@ -14,8 +27,8 @@ public class MessageTest {
         assertTrue(message.checkMessageID());
         assertEquals(10, message.getMessageID().length());
     }
-    
- @Test
+
+    @Test
     public void testCheckRecipientCell() {
         Message message = new Message(
                 0, "+27831234567", "Hello there"
@@ -50,7 +63,7 @@ public class MessageTest {
                 message.checkMessageLength()
         );
     }
-    
+
     @Test
     public void testMessageExceeds250Characters() {
         String longMessage = "A".repeat(251);
@@ -73,7 +86,8 @@ public class MessageTest {
 
         String hash = message.createMessageHash();
 
-        assertTrue(hash.matches("\\d{2}:0:HELLOTHERE"));
+        assertTrue(hash.matches("\\d{2}:0:HELLO:THERE"));
+        assertEquals(hash, message.getMessageHash());
     }
 
     @Test
@@ -107,7 +121,7 @@ public class MessageTest {
     }
 
     @Test
-    public void testStoreMessage() {
+    public void testStoreMessage() throws Exception {
         Message message = new Message(
                 0, "+27831234567", "Hello there"
         );
@@ -119,6 +133,16 @@ public class MessageTest {
 
         assertEquals("Stored", message.getStatus());
         assertEquals(0, message.returnTotalMessagess());
+
+        assertTrue(Files.exists(storedMessagesFile));
+
+        String json = Files.readString(storedMessagesFile);
+
+        assertTrue(json.contains(message.getMessageID()));
+        assertTrue(json.contains(message.getMessageHash()));
+        assertTrue(json.contains("+27831234567"));
+        assertTrue(json.contains("Hello there"));
+        assertTrue(json.contains("\"status\": \"Stored\""));
     }
 
     @Test
