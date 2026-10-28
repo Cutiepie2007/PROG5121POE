@@ -1,5 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java
  */
 
 package com.mycompany.prog5121poe;
@@ -19,7 +20,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    // Stores recently sent messages from Part 2
+    // Stores recently sent messages
     static ArrayList<String> recentSentMessages = new ArrayList<>();
 
     // Part 3 arrays
@@ -29,7 +30,7 @@ public class Main {
     static String[] messageHashes = new String[100];
     static String[] messageIDs = new String[100];
 
-    // Counters for the Part 3 arrays
+    // Counters for the arrays
     static int sentCount = 0;
     static int disregardedCount = 0;
     static int storedCount = 0;
@@ -71,45 +72,44 @@ public class Main {
                     cellPhoneNumber
             );
 
-            System.out.println(login.registerUser());
-
             // ==============================
             // REGISTRATION RESULTS
             // ==============================
 
-            System.out.println("================================");
+            System.out.println("\n================================");
             System.out.println("REGISTRATION RESULTS");
             System.out.println("================================");
 
+            System.out.println(login.registerUser());
+
             if (login.checkUserName()) {
-                System.out.println("Username successfully captured");
+                System.out.println("Username successfully captured.");
             } else {
-                System.out.println("Username is incorrectly formatted");
+                System.out.println("Username is incorrectly formatted.");
             }
 
             if (login.checkPasswordComplexity()) {
                 System.out.println("Password successfully captured.");
             } else {
-                System.out.println("Password is incorrectly formatted");
+                System.out.println("Password is incorrectly formatted.");
             }
 
             if (login.checkCellPhoneNumber()) {
-                System.out.println("Cell phone number successfully captured");
+                System.out.println("Cell phone number successfully captured.");
             } else {
-                System.out.println("Cell phone number is incorrectly formatted");
+                System.out.println(
+                        "Cell phone number is incorrectly formatted."
+                );
             }
 
-            if (login.checkUserName()
-                    && login.checkPasswordComplexity()
-                    && login.checkCellPhoneNumber()) {
-
-                System.out.println("Registration successful.");
-
-            } else {
+            if (!login.checkUserName()
+                    || !login.checkPasswordComplexity()
+                    || !login.checkCellPhoneNumber()) {
 
                 System.out.println(
                         "Registration failed. Please correct your details."
                 );
+
                 return;
             }
 
@@ -117,7 +117,7 @@ public class Main {
             // LOGIN
             // ==============================
 
-            System.out.println("================================");
+            System.out.println("\n================================");
             System.out.println("LOGIN");
             System.out.println("================================");
 
@@ -132,12 +132,15 @@ public class Main {
                 System.out.println(
                         "Username or password incorrect, please try again."
                 );
+
                 return;
             }
 
             System.out.println(
-                    "Welcome " + firstName + ", " + lastName
-                    + " it is great to see you again."
+                    login.returnLoginStatus(
+                            loginUsername,
+                            loginPassword
+                    )
             );
 
             System.out.println("Welcome to QuickChat.");
@@ -162,6 +165,7 @@ public class Main {
                     System.out.println(
                             "Please enter zero or a positive number."
                     );
+
                     return;
                 }
 
@@ -170,10 +174,11 @@ public class Main {
                 System.out.println(
                         "Please enter a valid whole number."
                 );
+
                 return;
             }
 
-            int messageNumber = 0;
+            int messageNumber = 1;
             int totalSent = 0;
             boolean quit = false;
 
@@ -202,19 +207,19 @@ public class Main {
 
                     case "1" -> {
 
-                        if (messageNumber >= numberOfMessages) {
+                        if (messageNumber > numberOfMessages) {
 
                             System.out.println(
                                     "You have reached the number of messages you selected."
                             );
+
                             break;
                         }
 
-                        for (; messageNumber < numberOfMessages;
-                                messageNumber++) {
+                        while (messageNumber <= numberOfMessages) {
 
                             System.out.println(
-                                    "\nMessage " + (messageNumber + 1)
+                                    "\nMessage " + messageNumber
                             );
 
                             System.out.print(
@@ -235,16 +240,23 @@ public class Main {
                                     messageText
                             );
 
-                            // Check message ID
+                            // ==============================
+                            // CHECK MESSAGE ID
+                            // ==============================
+
                             if (!message.checkMessageID()) {
 
                                 System.out.println(
                                         "Message ID is incorrectly formatted."
                                 );
+
                                 continue;
                             }
 
-                            // Check recipient
+                            // ==============================
+                            // CHECK RECIPIENT
+                            // ==============================
+
                             String recipientResult =
                                     message.checkRecipientCell();
 
@@ -253,11 +265,17 @@ public class Main {
                             if (!recipientResult.startsWith(
                                     "Cell phone number successfully")) {
 
-                                messageNumber--;
-                                break;
+                                System.out.println(
+                                        "Please enter the message again."
+                                );
+
+                                continue;
                             }
 
-                            // Check message length
+                            // ==============================
+                            // CHECK MESSAGE LENGTH
+                            // ==============================
+
                             String lengthResult =
                                     message.checkMessageLength();
 
@@ -266,11 +284,17 @@ public class Main {
                             if (!"Message ready to send.".equals(
                                     lengthResult)) {
 
-                                messageNumber--;
-                                break;
+                                System.out.println(
+                                        "Please enter the message again."
+                                );
+
+                                continue;
                             }
 
-                            // Display ID and hash
+                            // ==============================
+                            // DISPLAY ID AND HASH
+                            // ==============================
+
                             System.out.println(
                                     "Message ID generated: "
                                     + message.getMessageID()
@@ -278,10 +302,13 @@ public class Main {
 
                             System.out.println(
                                     "Message Hash: "
-                                    + message.createMessageHash()
+                                    + message.getMessageHash()
                             );
 
-                            // Message action
+                            // ==============================
+                            // MESSAGE ACTION
+                            // ==============================
+
                             System.out.println(
                                     "Choose what to do with this message:"
                             );
@@ -298,25 +325,33 @@ public class Main {
 
                             try {
 
-                                action =
-                                        Integer.parseInt(
-                                                scanner.nextLine()
-                                        );
+                                action = Integer.parseInt(
+                                        scanner.nextLine()
+                                );
 
                             } catch (NumberFormatException e) {
 
                                 action = -1;
                             }
 
-                            String actionResult = message.SentMessage(action);
-                            if (action != 3) {
-                                System.out.println(actionResult);
-}
+                            if (action < 1 || action > 3) {
+
+                                System.out.println(
+                                        "Invalid option. Please choose 1, 2 or 3."
+                                );
+
+                                continue;
+                            }
+
+                            String actionResult =
+                                    message.SentMessage(action);
+
+                            System.out.println(actionResult);
+
                             // ==============================
-                            // PART 3 ARRAYS
+                            // STORE MESSAGE ID
                             // ==============================
 
-                            // Store message ID
                             if (idCount < messageIDs.length) {
 
                                 messageIDs[idCount] =
@@ -325,7 +360,10 @@ public class Main {
                                 idCount++;
                             }
 
-                            // Store message hash
+                            // ==============================
+                            // STORE MESSAGE HASH
+                            // ==============================
+
                             if (hashCount < messageHashes.length) {
 
                                 messageHashes[hashCount] =
@@ -370,6 +408,24 @@ public class Main {
 
                                     disregardedCount++;
                                 }
+
+                                System.out.print(
+                                        "Enter 0 to delete the disregarded message: "
+                                );
+
+                                String deleteChoice =
+                                        scanner.nextLine();
+
+                                if ("0".equals(deleteChoice)) {
+
+                                    deleteDisregardedMessage(message);
+
+                                } else {
+
+                                    System.out.println(
+                                            "Message remains disregarded."
+                                    );
+                                }
                             }
 
                             // ==============================
@@ -385,7 +441,10 @@ public class Main {
                                 );
                             }
 
-                            // Display complete message
+                            // ==============================
+                            // DISPLAY MESSAGE DETAILS
+                            // ==============================
+
                             System.out.println(
                                     "\nFull message details:"
                             );
@@ -393,6 +452,10 @@ public class Main {
                             System.out.println(
                                     message.printMessages()
                             );
+
+                            // Only increase the message number
+                            // after successful processing.
+                            messageNumber++;
                         }
                     }
 
@@ -411,7 +474,7 @@ public class Main {
                         } else {
 
                             System.out.println(
-                                    "Recently Sent Messages:"
+                                    "\nRecently Sent Messages:"
                             );
 
                             for (int i =
@@ -526,9 +589,9 @@ public class Main {
                 storedCount++;
             }
 
-        } catch (IOException |
-                IllegalStateException |
-                com.google.gson.JsonParseException e) {
+        } catch (IOException
+                | IllegalStateException
+                | com.google.gson.JsonParseException e) {
 
             System.out.println(
                     "Error loading stored messages: "
@@ -625,6 +688,7 @@ public class Main {
             }
         }
     }
+
     // ==========================================
     // DISPLAY SENDER AND RECIPIENT
     // ==========================================
@@ -724,6 +788,51 @@ public class Main {
     // SEARCH MESSAGE ID
     // ==========================================
 
+    public static Message findMessageByID(
+            String searchID) {
+
+        // Search sent messages
+        for (int i = 0;
+                i < sentCount;
+                i++) {
+
+            if (sentMessages[i]
+                    .getMessageID()
+                    .equals(searchID)) {
+
+                return sentMessages[i];
+            }
+        }
+
+        // Search disregarded messages
+        for (int i = 0;
+                i < disregardedCount;
+                i++) {
+
+            if (disregardedMessages[i]
+                    .getMessageID()
+                    .equals(searchID)) {
+
+                return disregardedMessages[i];
+            }
+        }
+
+        // Search stored messages
+        for (int i = 0;
+                i < storedCount;
+                i++) {
+
+            if (storedMessages[i]
+                    .getMessageID()
+                    .equals(searchID)) {
+
+                return storedMessages[i];
+            }
+        }
+
+        return null;
+    }
+
     public static void searchMessageID(
             Scanner scanner) {
 
@@ -734,34 +843,22 @@ public class Main {
         String searchID =
                 scanner.nextLine();
 
-        boolean found = false;
+        Message message =
+                findMessageByID(searchID);
 
-        for (int i = 0;
-                i < storedCount;
-                i++) {
+        if (message != null) {
 
-            Message message =
-                    storedMessages[i];
+            System.out.println(
+                    "\nRecipient: "
+                    + message.getRecipient()
+            );
 
-            if (message.getMessageID()
-                    .equals(searchID)) {
+            System.out.println(
+                    "Message: "
+                    + message.getMessageText()
+            );
 
-                System.out.println(
-                        "\nRecipient: "
-                        + message.getRecipient()
-                );
-
-                System.out.println(
-                        "Message: "
-                        + message.getMessageText()
-                );
-
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
+        } else {
 
             System.out.println(
                     "Message ID not found."
@@ -789,6 +886,26 @@ public class Main {
                 "\nMessages for recipient:"
         );
 
+        // Search sent messages
+        for (int i = 0;
+                i < sentCount;
+                i++) {
+
+            Message message =
+                    sentMessages[i];
+
+            if (message.getRecipient()
+                    .equals(searchRecipient)) {
+
+                System.out.println(
+                        message.getMessageText()
+                );
+
+                found = true;
+            }
+        }
+
+        // Search stored messages
         for (int i = 0;
                 i < storedCount;
                 i++) {
@@ -816,7 +933,47 @@ public class Main {
     }
 
     // ==========================================
-    // DELETE MESSAGE USING HASH
+    // DELETE DISREGARDED MESSAGE
+    // ==========================================
+
+    public static void deleteDisregardedMessage(
+            Message message) {
+
+        for (int i = 0;
+                i < disregardedCount;
+                i++) {
+
+            if (disregardedMessages[i] == message) {
+
+                for (int j = i;
+                        j < disregardedCount - 1;
+                        j++) {
+
+                    disregardedMessages[j] =
+                            disregardedMessages[j + 1];
+                }
+
+                disregardedMessages[
+                        disregardedCount - 1
+                ] = null;
+
+                disregardedCount--;
+
+                System.out.println(
+                        "Message successfully deleted."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Message could not be deleted."
+        );
+    }
+
+    // ==========================================
+    // DELETE STORED MESSAGE USING HASH
     // ==========================================
 
     public static void deleteMessageByHash(
@@ -914,9 +1071,9 @@ public class Main {
                 );
             }
 
-        } catch (IOException |
-                IllegalStateException |
-                com.google.gson.JsonParseException e) {
+        } catch (IOException
+                | IllegalStateException
+                | com.google.gson.JsonParseException e) {
 
             System.out.println(
                     "Error deleting message: "
@@ -931,59 +1088,59 @@ public class Main {
 
     public static void displayReport() {
 
-        if (storedCount == 0) {
-
-            System.out.println(
-                    "No stored messages."
-            );
-
-            return;
-        }
+    if (sentCount == 0) {
 
         System.out.println(
-                "\n================================"
+                "No sent messages."
         );
 
-        System.out.println(
-                "STORED MESSAGE REPORT"
-        );
-
-        System.out.println(
-                "================================"
-        );
-
-        for (int i = 0;
-                i < storedCount;
-                i++) {
-
-            Message message =
-                    storedMessages[i];
-
-            System.out.println(
-                    "Message ID: "
-                    + message.getMessageID()
-            );
-
-            System.out.println(
-                    "Message Hash: "
-                    + message.getMessageHash()
-            );
-
-            System.out.println(
-                    "Recipient: "
-                    + message.getRecipient()
-            );
-
-            System.out.println(
-                    "Message: "
-                    + message.getMessageText()
-            );
-
-            System.out.println(
-                    "------------------------------"
-            );
-        }
+        return;
     }
+
+    System.out.println(
+            "\n================================"
+    );
+
+    System.out.println(
+            "Message Report"
+    );
+
+    System.out.println(
+            "================================"
+    );
+
+    for (int i = 0;
+            i < sentCount;
+            i++) {
+
+        Message message =
+                sentMessages[i];
+
+        System.out.println(
+                "Message ID: "
+                + message.getMessageID()
+        );
+
+        System.out.println(
+                "Message Hash: "
+                + message.getMessageHash()
+        );
+
+        System.out.println(
+                "Recipient: "
+                + message.getRecipient()
+        );
+
+        System.out.println(
+                "Message: "
+                + message.getMessageText()
+        );
+
+        System.out.println(
+                "------------------------------"
+        );
+    }
+}
 
     // ==========================================
     // GETTERS FOR PART 3 ARRAYS
