@@ -18,7 +18,7 @@ public class Login {
         this.cellPhoneNumber = cellPhoneNumber;
     }
 
-    public String getFirstname() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -26,11 +26,11 @@ public class Login {
         return lastName;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
-    public String getPasword() {
+    public String getPassword() {
         return password;
     }
 
@@ -38,7 +38,7 @@ public class Login {
         return cellPhoneNumber;
     }
 
-    public void setFirstname(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
