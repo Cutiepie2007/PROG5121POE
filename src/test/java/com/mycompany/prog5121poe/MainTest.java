@@ -208,4 +208,89 @@ public class MainTest {
             );
         }
     }
+
+    // Test 5: Delete a message using the message hash
+    @Test
+    public void testDeleteMessageByHash() throws Exception {
+
+        Gson gson = new Gson();
+        JsonArray jsonArray = new JsonArray();
+
+        jsonArray.add(gson.toJsonTree(message2));
+        jsonArray.add(gson.toJsonTree(message5));
+
+        Files.write(
+                Paths.get("stored_messages.json"),
+                gson.toJson(jsonArray).getBytes()
+        );
+
+        try (Scanner scanner = new Scanner("AA:2:WHERE")) {
+
+            Main.deleteMessageByHash(scanner);
+
+            String result = output.toString();
+
+            assertTrue(
+                    result.contains("successfully deleted")
+            );
+        }
+
+        // Reload the JSON file after deletion
+        Main.loadStoredMessagesFromJson();
+
+        // Confirm that only Message 5 remains
+        assertEquals(1, Main.storedCount);
+
+        assertEquals(
+                "Ok, I am leaving without you.",
+                Main.storedMessages[0].getMessageText()
+        );
+
+        // Read the updated JSON file
+        String jsonContent = Files.readString(
+                Paths.get("stored_messages.json")
+        );
+
+        // Confirm Message 5 is still stored in the JSON file
+        assertTrue(
+                jsonContent.contains(
+                        "Ok, I am leaving without you."
+                )
+        );
+
+        // Confirm Message 2 was removed from the JSON file
+        assertTrue(
+                !jsonContent.contains(
+                        "Where are you? You are late! I have asked you to be on time."
+                )
+        );
+    }
+
+    // Test 6: Display Report
+    @Test
+    public void testDisplayReport() {
+
+        Main.displayReport();
+
+        String result = output.toString();
+
+        assertTrue(result.contains("Report"));
+
+        // Check Message Hash
+        assertTrue(result.contains("AA:1:DIDCAKE"));
+        assertTrue(result.contains("AA:5:LEAVING"));
+
+        // Check Recipient
+        assertTrue(result.contains("+27834557896"));
+        assertTrue(result.contains("+27838884567"));
+
+        // Check Message
+        assertTrue(
+                result.contains("Did you get the cake?")
+        );
+
+        assertTrue(
+                result.contains("Ok, I am leaving without you.")
+        );
+    }
 }
