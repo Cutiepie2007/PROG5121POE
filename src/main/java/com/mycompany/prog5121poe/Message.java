@@ -15,14 +15,17 @@ import java.util.Random;
 
 public final class Message {
 
-    private final String messageID;
-    private final int messageNumber;
-    private final String recipient;
-    private final String messageText;
-    private final String messageHash;
+    private String messageID;
+    private int messageNumber;
+    private String recipient;
+    private String messageText;
+    private String messageHash;
     private String status;
 
-    // Constructor for creating a new message
+    // Required for loading messages from JSON with Gson
+    public Message() {
+    }
+
     public Message(int messageNumber, String recipient, String messageText) {
         this.messageNumber = messageNumber;
         this.recipient = recipient;
@@ -32,127 +35,78 @@ public final class Message {
         this.status = "Pending";
     }
 
-    // Constructor for loading an existing message from JSON
-    public Message(
-            int messageNumber,
-            String messageID,
-            String recipient,
-            String messageText,
-            String messageHash,
-            String status) {
-
+    // Constructor for test data and previously stored messages
+    public Message(int messageNumber, String messageID, String recipient,
+                   String messageText, String messageHash, String status) {
         this.messageNumber = messageNumber;
         this.messageID = messageID;
         this.recipient = recipient;
         this.messageText = messageText;
-        this.messageHash = messageHash;
+        this.messageHash = createMessageHash();
         this.status = status;
     }
 
-    // Generate a random ten-digit message ID
     private String generateMessageID() {
         Random random = new Random();
-
         long number = 1_000_000_000L
                 + (long) (random.nextDouble() * 9_000_000_000L);
 
         return String.valueOf(number);
     }
 
-    // Check that the message ID contains ten digits
     public boolean checkMessageID() {
-        return messageID != null
-                && messageID.matches("\\d{10}");
+        return messageID != null && messageID.matches("\\d{10}");
     }
 
-    // Validate the recipient's South African cellphone number
     public String checkRecipientCell() {
-        if (recipient != null
-                && recipient.matches("^\\+27\\d{9}$")) {
-
+        if (recipient != null && recipient.matches("^\\+27\\d{9}$")) {
             return "Cell phone number successfully captured.";
         }
 
         return "Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.";
     }
 
-    // Check that the message is not empty and does not exceed 250 characters
     public String checkMessageLength() {
+        if (messageText == null || messageText.length() > 250) {
+            int length = messageText == null ? 0 : messageText.length();
 
-        if (messageText == null
-                || messageText.trim().isEmpty()) {
+            return "Message exceeds 250 characters by "
+                    + Math.max(0, length - 250)
+                    + "; please reduce the size.";
+        }
 
+        if (messageText.trim().isEmpty()) {
             return "Please enter a message.";
         }
 
-        if (messageText.length() <= 250) {
-            return "Message ready to send.";
-        }
-
-        return "Message exceeds 250 characters by "
-                + (messageText.length() - 250)
-                + "; please reduce the size.";
+        return "Message ready to send.";
     }
 
-    // Create the message hash
     public String createMessageHash() {
-
-        if (messageID == null) {
+        if (messageID == null || messageID.length() < 2) {
             return "";
         }
 
-        if (messageText == null
-                || messageText.trim().isEmpty()) {
-
-            return messageID.substring(0, 2)
-                    + ":" + messageNumber + ":";
+        if (messageText == null || messageText.trim().isEmpty()) {
+            return messageID.substring(0, 2) + ":" + messageNumber + ":";
         }
 
         String[] words = messageText.trim().split("\\s+");
 
-        String firstWord = "";
-        String lastWord = "";
+        String firstWord = cleanWord(words[0]);
+        String lastWord = cleanWord(words[words.length - 1]);
 
-        for (String word : words) {
-            String cleanedWord = cleanWord(word);
-
-            if (!cleanedWord.isEmpty()) {
-                firstWord = cleanedWord;
-                break;
-            }
-        }
-
-        for (int i = words.length - 1; i >= 0; i--) {
-            String cleanedWord = cleanWord(words[i]);
-
-            if (!cleanedWord.isEmpty()) {
-                lastWord = cleanedWord;
-                break;
-            }
-        }
-
-        String firstTwoIDDigits = messageID.substring(0, 2);
-
-        return (firstTwoIDDigits
-                + ":"
-                + messageNumber
-                + ":"
-                + firstWord
-                + ":"
-                + lastWord)
-                .toUpperCase(Locale.ROOT);
+        return (messageID.substring(0, 2) + ":"
+                + messageNumber + ":"
+                + firstWord + lastWord).toUpperCase(Locale.ROOT);
     }
 
-    // Remove punctuation from a word
     private String cleanWord(String word) {
         return word.replaceAll("[^A-Za-z0-9]", "");
     }
 
-    // Process the user's choice for a message
     public String SentMessage(int choice) {
-
         switch (choice) {
-
             case 1 -> {
                 status = "Sent";
                 return "Message successfully sent.";
@@ -170,110 +124,70 @@ public final class Message {
             }
 
             default -> {
-                return "Invalid option. Message remains pending.";
+                return "Invalid option.";
             }
         }
     }
 
-    // Display the message details
     public String printMessages() {
-
         return "Message ID: " + messageID
                 + "\nMessage Hash: " + messageHash
                 + "\nRecipient: " + recipient
                 + "\nMessage: " + messageText;
     }
 
-    // Return 1 if the message was sent, otherwise return 0
     public int returnTotalMessagess() {
-        return "Sent".equals(status) ? 1 : 0;
+        if ("Sent".equals(status)) {
+            return 1;
+        }
+
+        return 0;
     }
 
-    // Store the message in a JSON file
     public void storeMessage() {
-
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
-
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Path filePath = Path.of("stored_messages.json");
         JsonArray messages = new JsonArray();
 
         try {
+            if (Files.exists(filePath) && Files.size(filePath) > 0) {
+                String json = Files.readString(
+                        filePath, StandardCharsets.UTF_8);
 
-            if (Files.exists(filePath)
-                    && Files.size(filePath) > 0) {
+                if (!json.trim().isEmpty()) {
+                    JsonElement element = JsonParser.parseString(json);
 
-                String existingJson = Files.readString(
-                        filePath,
-                        StandardCharsets.UTF_8
-                ).trim();
-
-                if (!existingJson.isEmpty()) {
-
-                    JsonElement jsonElement =
-                            JsonParser.parseString(existingJson);
-
-                    if (!jsonElement.isJsonArray()) {
+                    if (!element.isJsonArray()) {
+                        System.out.println(
+                                "Stored messages file has an invalid format.");
                         return;
                     }
 
-                    messages = jsonElement.getAsJsonArray();
+                    messages = element.getAsJsonArray();
                 }
             }
 
-            JsonObject messageObject = new JsonObject();
+            JsonObject object = new JsonObject();
+            object.addProperty("messageID", messageID);
+            object.addProperty("messageNumber", messageNumber);
+            object.addProperty("recipient", recipient);
+            object.addProperty("messageText", messageText);
+            object.addProperty("messageHash", messageHash);
+            object.addProperty("status", status);
 
-            messageObject.addProperty(
-                    "messageID",
-                    messageID
-            );
-
-            messageObject.addProperty(
-                    "messageNumber",
-                    messageNumber
-            );
-
-            messageObject.addProperty(
-                    "recipient",
-                    recipient
-            );
-
-            messageObject.addProperty(
-                    "messageText",
-                    messageText
-            );
-
-            messageObject.addProperty(
-                    "messageHash",
-                    messageHash
-            );
-
-            messageObject.addProperty(
-                    "status",
-                    status
-            );
-
-            messages.add(messageObject);
+            messages.add(object);
 
             Files.writeString(
                     filePath,
                     gson.toJson(messages),
-                    StandardCharsets.UTF_8
-            );
+                    StandardCharsets.UTF_8);
 
-        } catch (IOException
-                | IllegalStateException
-                | com.google.gson.JsonParseException e) {
-
-            System.out.println(
-                    "Error storing message: "
-                    + e.getMessage()
-            );
+        } catch (IOException | IllegalStateException
+                 | com.google.gson.JsonParseException e) {
+            System.out.println("Error storing message: " + e.getMessage());
         }
     }
 
-    // Getters
     public String getMessageID() {
         return messageID;
     }
