@@ -1,94 +1,107 @@
 package com.mycompany.prog5121poe;
 
-    import org.junit.jupiter.api.Test;
-    import static org.junit.jupiter.api.Assertions.assertTrue;
-    import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoginTest {
-    
-@Test
-public void testCheckUserName(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"Ch&&sec@ke99!",
-"+27838668976"
-);
-assertTrue(user.checkUserName());
-}
 
-@Test
-public void testCheckPasswordComplexity(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"Ch&&sec@ke99!",
-"+27838668976"
-);
-assertTrue(user.checkPasswordComplexity());
-}
+    @Test
+    public void testCheckUserName() {
 
-@Test
-public void testCheckCellPhoneNumber(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"Ch&&sec@ke99!",
-"+27838668976"
-);
-assertTrue(user.checkCellPhoneNumber());
-}
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "+27838668976"
+        );
 
-@Test
-public void testRegistrationResult(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"Ch&&sec@ke99!",
-"+27838668976"
-);
-assertTrue(user.checkUserName());
-assertTrue(user.checkPasswordComplexity());
-assertTrue(user.checkCellPhoneNumber());
-}
+        assertTrue(user.checkUserName());
+    }
 
-@Test
-public void testInvalidUserName(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl1",
-"Ch&&sec@ke99!",
-"+27838968976"
-);
-assertFalse(user.checkUserName());
-}
+    @Test
+    public void testCheckPasswordComplexity() {
 
-@Test
-public void testInvalidPassword(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"password",
-"+2783896879"
-);
-assertFalse(user.checkPasswordComplexity());
-}
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "+27838668976"
+        );
 
-@Test
-public void testInvalidCellPhonesNumbers(){
-Login user = new Login(
-"John",
-"Smith",
-"kyl_1",
-"Ch&&sec@ke99!",
-"083968976"
-);
-assertFalse(user.checkCellPhoneNumber());
-}
+        assertTrue(user.checkPasswordComplexity());
+    }
+
+    @Test
+    public void testCheckCellPhoneNumber() {
+
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "+27838668976"
+        );
+
+        assertTrue(user.checkCellPhoneNumber());
+    }
+
+    @Test
+    public void testRegistrationResult() {
+
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "+27838668976"
+        );
+
+        assertEquals("Registration successful.", user.registerUser());
+    }
+
+    @Test
+    public void testInvalidUserName() {
+
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl1",
+                "Ch&&sec@ke99!",
+                "+27838968976"
+        );
+
+        assertFalse(user.checkUserName());
+    }
+
+    @Test
+    public void testInvalidPassword() {
+
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "password",
+                "+2783896879"
+        );
+
+        assertFalse(user.checkPasswordComplexity());
+    }
+
+    @Test
+    public void testInvalidCellPhoneNumber() {
+
+        Login user = new Login(
+                "John",
+                "Smith",
+                "kyl_1",
+                "Ch&&sec@ke99!",
+                "083968976"
+        );
+
+        assertFalse(user.checkCellPhoneNumber());
+    }
 }
