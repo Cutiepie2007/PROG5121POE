@@ -3,7 +3,9 @@ package com.mycompany.prog5121poe;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -11,9 +13,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-public class Message {
+public final class Message {
 
     private String messageID;
+    private String sender;
     private int messageNumber;
     private String recipient;
     private String messageText;
@@ -23,8 +26,14 @@ public class Message {
     // Constructor
     public Message(int messageNumber, String recipient,
             String messageText) {
+        this(messageNumber, "", recipient, messageText);
+    }
+
+    public Message(int messageNumber, String sender, String recipient,
+            String messageText) {
 
         this.messageNumber = messageNumber;
+        this.sender = sender;
         this.recipient = recipient;
         this.messageText = messageText;
 
@@ -154,25 +163,24 @@ public class Message {
 
         switch (choice) {
 
-            case 1:
+            case 1 -> {
                 status = "Sent";
                 return "Message successfully sent.";
+            }
 
-            case 2:
+            case 2 -> {
                 status = "Disregarded";
                 return "Press 0 to delete the message.";
+            }
 
-            case 3:
+            case 3 -> {
                 status = "Stored";
+                return "Message successfully stored.";
+            }
 
-                if (storeMessage()) {
-                    return "Message successfully stored.";
-                }
-
-                return "Error storing message.";
-
-            default:
+            default -> {
                 return "Invalid option. Message remains pending.";
+            }
         }
     }
 
@@ -211,18 +219,16 @@ public class Message {
 
             try {
 
-                FileReader reader = new FileReader(file);
-
-                JsonArray savedMessages =
-                        gson.fromJson(reader, JsonArray.class);
-
-                reader.close();
+                JsonArray savedMessages;
+                try (FileReader reader = new FileReader(file)) {
+                    savedMessages = gson.fromJson(reader, JsonArray.class);
+                }
 
                 if (savedMessages != null) {
                     messages = savedMessages;
                 }
 
-            } catch (Exception e) {
+            } catch (JsonIOException | JsonSyntaxException | IOException e) {
 
                 System.out.println("Error reading stored messages.");
                 return false;
@@ -233,6 +239,7 @@ public class Message {
         JsonObject messageObject = new JsonObject();
 
         messageObject.addProperty("messageID", messageID);
+        messageObject.addProperty("sender", sender);
         messageObject.addProperty("messageNumber", messageNumber);
         messageObject.addProperty("recipient", recipient);
         messageObject.addProperty("messageText", messageText);
@@ -244,11 +251,9 @@ public class Message {
         // Save messages to the JSON file
         try {
 
-            FileWriter writer = new FileWriter(file);
-
-            gson.toJson(messages, writer);
-
-            writer.close();
+            try (FileWriter writer = new FileWriter(file)) {
+                gson.toJson(messages, writer);
+            }
 
             return true;
 
@@ -262,8 +267,18 @@ public class Message {
     }
 
     // Getters
+    public String getSender() { return sender; }
+
+    public void setSender(String sender) { this.sender = sender; }
+
     public String getMessageID() {
         return messageID;
+    }
+
+    // Used by the Part 3 test data to set the supplied test ID.
+    public void setMessageID(String messageID) {
+        this.messageID = messageID;
+        this.messageHash = createMessageHash();
     }
 
     public int getMessageNumber() {
