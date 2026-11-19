@@ -29,18 +29,37 @@ public class Main {
             Login login = new Login(firstName, lastName, username,
                     password, cellPhoneNumber);
 
-            // Register the user and display the registration result.
-            System.out.println(login.registerUser());
-
-            // Check if all registration details are valid.
-            if (!login.checkUserName() || !login.checkPasswordComplexity()
-                    || !login.checkCellPhoneNumber()) {
-                System.out.println("Registration failed. Please correct your details.");
-                return;
+            // Check and display username validation.
+            if (login.checkUserName()) {
+                System.out.println("Username successfully captured.");
+            } else {
+                System.out.println("Username is incorrectly formatted.");
             }
 
-            // Ask the registered user to log in.
+            // Check and display password validation.
+            if (login.checkPasswordComplexity()) {
+                System.out.println("Password successfully captured.");
+            } else {
+                System.out.println("Password is incorrectly formatted.");
+            }
+
+            // Check and display cellphone validation.
+            if (login.checkCellPhoneNumber()) {
+                System.out.println("Cell phone number successfully captured.");
+            } else {
+            System.out.println("Cell phone number is incorrectly formatted.");
+            }
+
+            // Check whether all registration details are valid.
+            if (!login.checkUserName() || !login.checkPasswordComplexity()
+                    || !login.checkCellPhoneNumber()) {
+            System.out.println("Registration failed. Please correct your details.");
+            return;
+            }
+
             System.out.println("Registration successful.");
+
+            // Ask the registered user to log in.
             System.out.println("================================");
             System.out.println("LOGIN");
             System.out.println("================================");
@@ -57,7 +76,7 @@ public class Main {
             }
 
             // Welcome the user after a successful login.
-            System.out.println("Welcome " + firstName + ", " + lastName
+            System.out.println("Welcome " + firstName + " " + lastName
                     + " it is great to see you again.");
             System.out.println("Welcome to QuickChat.");
 
